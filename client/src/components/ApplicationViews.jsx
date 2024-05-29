@@ -6,6 +6,7 @@ import UserProfileList from "./userprofiles/UserProfilesList";
 import UserProfileDetails from "./userprofiles/UserProfileDetails";
 import CategoryList from "./categories/Categories";
 import CategoryEditForm from "./categories/CategoryEdit";
+import CategoryCreateForm from "./categories/CategoryCreateForm";
 
 export default function ApplicationViews({ loggedInUser, setLoggedInUser }) {
   return (
@@ -53,6 +54,13 @@ export default function ApplicationViews({ loggedInUser, setLoggedInUser }) {
             </AuthorizedRoute>
             }
           />
+          <Route path="/categories/create" 
+          element={
+            <AuthorizedRoute loggedInUser={loggedInUser} roles={["Admin"]}>
+               <CategoryCreateForm />
+            </AuthorizedRoute>
+          } 
+          /> 
         </Route>
         <Route
           path="login"
