@@ -16,3 +16,18 @@ export const deleteCategory = (categoryId) => {
             }
         });
 }
+
+export const updateCategory = (categoryId, updatedCategoryName) => {
+    return fetch(`${_apiUrl}/${categoryId}`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ categoryName: updatedCategoryName })
+    })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Failed to update category');
+            }
+        });
+}
