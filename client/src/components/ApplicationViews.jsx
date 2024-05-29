@@ -8,6 +8,8 @@ import CategoryList from "./categories/Categories";
 import CategoryEditForm from "./categories/CategoryEdit";
 import { PostsList } from "./posts/PostsList";
 import CategoryCreateForm from "./categories/CategoryCreateForm";
+import { TagsList } from "./tags/TagsList";
+import { CreateTagForm } from "./tags/CreateTagForm";
 
 
 export default function ApplicationViews({ loggedInUser, setLoggedInUser }) {
@@ -38,6 +40,20 @@ export default function ApplicationViews({ loggedInUser, setLoggedInUser }) {
                 <UserProfileDetails />
               </AuthorizedRoute>
             }
+          />
+        </Route>
+        <Route path="/tags">
+          <Route
+            index
+            element={
+              <AuthorizedRoute loggedInUser={loggedInUser} roles={["Admin"]}>
+                <TagsList />
+              </AuthorizedRoute>
+            }
+          />
+          <Route 
+            path="create" 
+            element={<CreateTagForm />}
           />
         </Route>
         <Route path="/categories">
