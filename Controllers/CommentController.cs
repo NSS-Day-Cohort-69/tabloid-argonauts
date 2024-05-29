@@ -18,9 +18,9 @@ public class CommentController : ControllerBase
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetComments([FromQuery] int postId)
+        public async  Task<IActionResult> GetComments( int postId)
         {
-            List<Comment> comments = _dbContext.Comments
+            List<Comment> comments = await _dbContext.Comments
                 .Where(c => c.PostId == postId)
                 .Include(c => c.UserProfile)
                 .Select(c => new Comment
@@ -33,12 +33,13 @@ public class CommentController : ControllerBase
                     PostId = c.PostId,
                     UserProfile = new UserProfile
                     {
+                        Id = c.Post.UserProfile.Id,
                         FirstName = c.Post.UserProfile.FirstName,
                         LastName = c.Post.UserProfile.LastName,
                         UserName = c.Post.UserProfile.UserName
                     }
                 })
-                .ToList();
+                .ToListAsync();
 
             if (comments == null || comments.Count == 0)
             {
