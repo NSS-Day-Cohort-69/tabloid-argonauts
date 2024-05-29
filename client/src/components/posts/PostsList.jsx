@@ -34,7 +34,7 @@ export const PostsList = () => {
             <CardText>{p.category?.categoryName}</CardText>
             <Button
               onClick={() => {
-                navigate(`/api/posts/${p.id}`);
+                navigate(`/posts/${p.id}`);
               }}
             >
               View Post
