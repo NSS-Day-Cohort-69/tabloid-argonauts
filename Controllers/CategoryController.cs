@@ -60,6 +60,57 @@ public class CategoryController : ControllerBase
             }
         }
 
+    [HttpPut("{id}")]
+public IActionResult UpdateCategory(int id, [FromBody] CategoryDTO categoryDTO)
+{
+    try
+    {
+        var category = _dbContext.Categories.Find(id);
+        if (category == null)
+        {
+            return NotFound(); 
+        }
+
+  
+        category.CategoryName = categoryDTO.CategoryName;
+
+        _dbContext.SaveChanges();
+
+        return NoContent(); 
+    }
+    catch (Exception ex)
+    {
+        return StatusCode(500, $"Internal server error: {ex.Message}"); 
+    }
+}
+
+     [HttpPost]
+        public async Task<IActionResult> CreateCategory([FromBody] CategoryDTO categoryDTO)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
+
+                var category = new Category
+                {
+                    CategoryName = categoryDTO.CategoryName
+                };
+
+                _dbContext.Categories.Add(category);
+                await _dbContext.SaveChangesAsync();
+
+                return CreatedAtAction(nameof(GetCategories), category);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+
     
     }
 
