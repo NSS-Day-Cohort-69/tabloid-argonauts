@@ -44,7 +44,7 @@ public class TagController : ControllerBase
         {
             return NotFound();
         }
-        else if (id != tag.Id)
+        else if (id != tagToUpdate.Id)
         {
             return BadRequest();
         }
