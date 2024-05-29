@@ -1,8 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { deleteCategory } from '../../managers/categoryManager';
+import { Link } from 'react-router-dom';
+import CategoryEditForm from './CategoryEdit';
 
 const CategoryList = () => {
   const [categories, setCategories] = useState([]);
+  const [showConfirmation, setShowConfirmation] = useState(false);
+  const [categoryToDelete, setCategoryToDelete] = useState(null);
 
   useEffect(() => {
     fetchCategories();
@@ -21,7 +25,6 @@ const CategoryList = () => {
     }
   };
 
-
   const handleDeleteCategory = async (categoryId) => {
     try {
       await deleteCategory(categoryId);
@@ -31,6 +34,14 @@ const CategoryList = () => {
     }
   };
 
+  const handleConfirmDelete = () => {
+    handleDeleteCategory(categoryToDelete);
+    setShowConfirmation(false);
+  };
+
+  const handleCancelDelete = () => {
+    setShowConfirmation(false);
+  };
 
   return (
     <div>
@@ -39,11 +50,25 @@ const CategoryList = () => {
         {categories.map(category => (
           <li key={category.id}>
             {category.categoryName}
-            <button onClick={() => handleDeleteCategory(category.id)}>Delete</button>
+            <button onClick={() => {
+              setCategoryToDelete(category.id);
+              setShowConfirmation(true);
+            }}>Delete</button>
+            <Link to={`/categories/edit/${category.id}`}>Edit</Link> 
           </li>
         ))}
       </ul>
+
+      
+      {showConfirmation && (
+        <div className="confirmation-modal">
+          <p>Are you sure you want to delete this category?</p>
+          <button onClick={handleConfirmDelete}>Delete</button>
+          <button onClick={handleCancelDelete}>Cancel</button>
+        </div>
+      )}
     </div>
   );
 };
+
 export default CategoryList;

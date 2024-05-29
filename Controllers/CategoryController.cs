@@ -60,6 +60,32 @@ public class CategoryController : ControllerBase
             }
         }
 
+    [HttpPut("{id}")]
+public IActionResult UpdateCategory(int id, [FromBody] CategoryDTO categoryDTO)
+{
+    try
+    {
+        var category = _dbContext.Categories.Find(id);
+        if (category == null)
+        {
+            return NotFound(); 
+        }
+
+  
+        category.CategoryName = categoryDTO.CategoryName;
+
+        _dbContext.SaveChanges();
+
+        return NoContent(); 
+    }
+    catch (Exception ex)
+    {
+        return StatusCode(500, $"Internal server error: {ex.Message}"); 
+    }
+}
+
+
+
     
     }
 
