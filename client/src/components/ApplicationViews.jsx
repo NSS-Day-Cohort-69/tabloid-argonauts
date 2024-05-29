@@ -4,6 +4,8 @@ import Login from "./auth/Login";
 import Register from "./auth/Register";
 import UserProfileList from "./userprofiles/UserProfilesList";
 import UserProfileDetails from "./userprofiles/UserProfileDetails";
+import CategoryList from "./categories/Categories";
+import CategoryEditForm from "./categories/CategoryEdit";
 import { PostsList } from "./posts/PostsList";
 
 export default function ApplicationViews({ loggedInUser, setLoggedInUser }) {
@@ -32,6 +34,42 @@ export default function ApplicationViews({ loggedInUser, setLoggedInUser }) {
             element={
               <AuthorizedRoute loggedInUser={loggedInUser} roles={["Admin"]}>
                 <UserProfileDetails />
+              </AuthorizedRoute>
+            }
+          />
+        </Route>
+        <Route path="/categories">
+          <Route
+            index
+            element={
+              <AuthorizedRoute loggedInUser={loggedInUser} roles={["Admin"]}>
+                <CategoryList />
+              </AuthorizedRoute>
+            }
+          />
+          <Route
+            path="/categories/edit/:id"
+            element={
+              <AuthorizedRoute loggedInUser={loggedInUser} roles={["Admin"]}>
+                <CategoryEditForm />
+              </AuthorizedRoute>
+            }
+          />
+        </Route>
+        <Route path="/categories">
+          <Route
+            index
+            element={
+              <AuthorizedRoute loggedInUser={loggedInUser} roles={["Admin"]}>
+                <CategoryList />
+              </AuthorizedRoute>
+            }
+          />
+          <Route
+            path="/categories/edit/:id"
+            element={
+              <AuthorizedRoute loggedInUser={loggedInUser} roles={["Admin"]}>
+                <CategoryEditForm />
               </AuthorizedRoute>
             }
           />
