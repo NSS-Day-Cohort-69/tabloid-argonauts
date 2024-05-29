@@ -6,3 +6,13 @@ export const getAllCategories = () => {
 }
 
 
+export const deleteCategory = (categoryId) => {
+    return fetch(`${_apiUrl}/${categoryId}`, {
+        method: 'DELETE'
+    })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Failed to delete category');
+            }
+        });
+}
