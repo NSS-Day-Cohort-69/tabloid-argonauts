@@ -9,6 +9,7 @@ import CategoryEditForm from "./categories/CategoryEdit";
 import { PostsList } from "./posts/PostsList";
 import CategoryCreateForm from "./categories/CategoryCreateForm";
 import { PostDetails } from "./posts/PostDetails";
+import MyPostList from "./posts/MyPostList";
 
 export default function ApplicationViews({ loggedInUser, setLoggedInUser }) {
   return (
@@ -80,6 +81,9 @@ export default function ApplicationViews({ loggedInUser, setLoggedInUser }) {
           path="register"
           element={<Register setLoggedInUser={setLoggedInUser} />}
         />
+      </Route>
+      <Route path="/myposts">
+        <Route index element={<MyPostList loggedInUser={loggedInUser} />} />
       </Route>
       <Route path="*" element={<p>Whoops, nothing here...</p>} />
     </Routes>

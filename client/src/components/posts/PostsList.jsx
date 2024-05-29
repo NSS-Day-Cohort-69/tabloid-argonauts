@@ -22,6 +22,7 @@ export const PostsList = () => {
       <h1>Posts List</h1>
       {posts.map((p) => (
         <Card
+          key={p.id}
           style={{
             width: "10rem",
           }}
