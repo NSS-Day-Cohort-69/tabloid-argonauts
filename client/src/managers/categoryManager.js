@@ -31,3 +31,27 @@ export const updateCategory = (categoryId, updatedCategoryName) => {
             }
         });
 }
+
+
+export const createCategory = async (categoryDTO) => {
+    try {
+      const response = await fetch(_apiUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(categoryDTO)
+      });
+  
+      if (!response.ok) {
+        throw new Error('Failed to create category');
+      }
+  
+      const data = await response.json();
+      return data;
+        } 
+        catch (error) {
+        console.error('Error creating category:', error);
+        throw error; 
+    }
+  };

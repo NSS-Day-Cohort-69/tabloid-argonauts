@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { deleteCategory } from '../../managers/categoryManager';
 import { Link } from 'react-router-dom';
 import CategoryEditForm from './CategoryEdit';
+import { useNavigate } from 'react-router-dom';
 
 const CategoryList = () => {
   const [categories, setCategories] = useState([]);
@@ -43,9 +44,15 @@ const CategoryList = () => {
     setShowConfirmation(false);
   };
 
+  const navigate = useNavigate();
+  const handleCreateCategory = () => {
+    navigate('/categories/create');
+  };
+
   return (
     <div>
       <h2>Categories</h2>
+      <button onClick={handleCreateCategory}>Create Category</button>
       <ul>
         {categories.map(category => (
           <li key={category.id}>
