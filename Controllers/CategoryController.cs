@@ -37,6 +37,29 @@ public class CategoryController : ControllerBase
             return Ok(categoryDTOs);
         }
     
+
+[HttpDelete("{id}")]
+        public IActionResult DeleteCategory(int id)
+        {
+            try
+            {
+                var category = _dbContext.Categories.Find(id);
+                if (category == null)
+                {
+                    return NotFound(); 
+                }
+
+                _dbContext.Categories.Remove(category);
+                _dbContext.SaveChanges();
+
+                return NoContent(); 
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}"); 
+            }
+        }
+
     
     }
 
