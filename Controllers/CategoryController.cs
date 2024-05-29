@@ -22,7 +22,7 @@ public class CategoryController : ControllerBase
 
 
   [HttpGet]
-  [Authorize]
+ 
         public IActionResult GetCategories()
         {
             var categories = _dbContext.Categories.ToList();
