@@ -3,14 +3,13 @@ import { useParams } from 'react-router-dom';
 import { updateCategory } from '../../managers/categoryManager';
 
 const CategoryEditForm = () => {
-  const { id } = useParams(); // Get the category ID from the URL params
+  const { id } = useParams(); 
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     const updatedCategoryName = event.target.elements.categoryName.value;
     try {
       await updateCategory(id, updatedCategoryName);
-      // Navigate back to category list after submission
       window.history.back();
     } catch (error) {
       console.error('Error updating category:', error);
