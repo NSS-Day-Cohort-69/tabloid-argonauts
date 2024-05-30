@@ -1,4 +1,10 @@
 import { useEffect, useState } from "react";
+import {
+  createPostTag,
+  deletePostTag,
+  getPostById,
+} from "../../managers/postManager";
+import { Link, useParams } from "react-router-dom";
 import { deletePost, getPostById } from "../../managers/postManager";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import {
@@ -39,9 +45,14 @@ export const PostDetails = ({ loggedInUser }{ loggedInUser}) => {
     getPostById(id).then((obj) => setPost(obj));
   }, [id]);
 
-  // fetch tags from databaase
   useEffect(() => {
     GetAllTags().then((arr) => setTags(arr));
+  }, []);
+
+  useEffect(() => {
+    getPostById(id).then((obj) =>
+      setTagSelections(obj.postTags.map((pt) => pt.tagId))
+    );
   }, []);
 
   const formatDate = (dateString) => {
@@ -51,11 +62,18 @@ export const PostDetails = ({ loggedInUser }{ loggedInUser}) => {
     return new Intl.DateTimeFormat("en-US", options).format(date);
   };
 
-  const handleInputChange = (event) => {
-    const tag = parseInt(event.target.id);
-    if (event.target.checked) {
-      setTagSelections((prevSelections) => [...prevSelections]);
-    }
+  const handleInputChange = (tagId) => {
+    setTagSelections((prevIds) => {
+      if (prevIds.includes(tagId)) {
+        return prevIds.filter((id) => id != tagId);
+      } else {
+        return [...prevIds, tagId];
+      }
+    });
+  };
+
+  const handleSubmit = (id, tagSelections) => {
+    createPostTag(id, tagSelections);
   };
 
   const handleDeletePost = async (postId) => {
@@ -128,17 +146,28 @@ export const PostDetails = ({ loggedInUser }{ loggedInUser}) => {
       <Modal isOpen={modal} toggle={toggle}>
         <ModalHeader toggle={toggle}>Choose tags for post</ModalHeader>
         <ModalBody>
-          <Form onSubmit>
+          <Form>
             {tags.map((t) => (
               <FormGroup check key={t.id}>
-                <Input id={t.id} type="checkbox" value={t.name} onChange />{" "}
+                <Input
+                  id={t.id}
+                  type="checkbox"
+                  value={t.name}
+                  checked={tagSelections.includes(t.id)}
+                  onChange={() => handleInputChange(t.id)}
+                />
                 <Label check>{t.tagName}</Label>
               </FormGroup>
             ))}
           </Form>
         </ModalBody>
         <ModalFooter>
-          <Button color="primary">Save</Button>{" "}
+          <Button
+            color="primary"
+            onClick={() => handleSubmit(id, tagSelections)}
+          >
+            Save
+          </Button>{" "}
           <Button color="secondary" onClick={toggle}>
             Cancel
           </Button>

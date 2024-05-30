@@ -11,33 +11,31 @@ export const getPostById = (id) => {
 export const createPost = async (post) => {
   try {
     const response = await fetch(_apiUrl, {
-      method: 'POST',
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json'
+        "Content-Type": "application/json",
       },
-      body: JSON.stringify(post)
+      body: JSON.stringify(post),
     });
 
     if (!response.ok) {
-      throw new Error('Failed to create this post');
+      throw new Error("Failed to create this post");
     }
-    
+
     const data = await response.json();
     return data;
-      } 
-      catch (error) {
-      console.error('Error creating this post:', error);
-      throw error; 
+  } catch (error) {
+    console.error("Error creating this post:", error);
+    throw error;
   }
 };
 
 export const deletePost = (postId) => {
   return fetch(_apiUrl + `${postId}`, {
-      method: 'DELETE'
-  })
-      .then(response => {
-          if (!response.ok) {
-              throw new Error('Failed to delete category');
-          }
-      });
-}
+    method: "DELETE",
+  }).then((response) => {
+    if (!response.ok) {
+      throw new Error("Failed to delete category");
+    }
+  });
+};
