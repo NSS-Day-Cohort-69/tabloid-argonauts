@@ -17,3 +17,13 @@ export const createPost = (post) => {
     body: JSON.stringify(post),
   }).then((res) => res.json);
 };
+
+export const createPostTag = async (postId, tagArr) => {
+  return await fetch(`${_apiUrl}/${postId}`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(tagArr),
+  }).then((res) => res.json);
+};

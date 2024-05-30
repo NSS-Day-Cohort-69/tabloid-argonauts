@@ -27,6 +27,9 @@ public class PostController : ControllerBase
         return Ok(_dbContext.Posts
         .Include(p => p.UserProfile)
         .Include(p => p.Category)
+        .Include(p => p.PostTags)
+        .ThenInclude(pt => pt.Tag) 
+        .Include(p => p.PostReactions)
         .Select(p => new Post
         {
             Id = p.Id,
@@ -50,7 +53,12 @@ public class PostController : ControllerBase
                 CreateDateTime = p.UserProfile.CreateDateTime,
                 ImageLocation = p.UserProfile.ImageLocation,
             },
-            IsApproved = p.IsApproved
+            IsApproved = p.IsApproved,
+            PostTags = p.PostTags.Select(pt => new PostTag
+            {
+                PostId = pt.PostId,
+                TagId = pt.TagId
+            }).ToList()
         })
         .Where(p => p.IsApproved == true && p.PublicationDate < DateTime.Now)
         .OrderByDescending(p => p.PublicationDate)
@@ -58,12 +66,15 @@ public class PostController : ControllerBase
     }
 
     [HttpGet("{id}")]
-    [Authorize]
+    // [Authorize]
 
     public IActionResult GetPostById(int id)
     {
         Post post = _dbContext.Posts
         .Include(p => p.UserProfile)
+        .Include(p => p.Tags)
+        .Include(p => p.PostTags)
+        .ThenInclude(pt => pt.Tag) 
         .SingleOrDefault(p => p.Id == id);
 
         if (post == null)
@@ -83,5 +94,38 @@ public class PostController : ControllerBase
         _dbContext.SaveChanges();
         return Created($"/api/post/{post.Id}", post);
     }
+
+    [HttpPost("{id}")]
+    // [Authorize]
+    public IActionResult NewPostTag(int id, List<int> tagIds)
+    {
+        List<PostTag> postTags = _dbContext.PostTags.ToList();
+        foreach(PostTag postTag in postTags)
+        {
+            if(postTag.PostId == id)
+            {
+                _dbContext.PostTags.Remove(postTag);
+            }
+        }
+
+        _dbContext.SaveChanges();
+
+        foreach(int tagId in tagIds)
+        {
+            PostTag postTagToAdd = new PostTag
+            {
+                PostId = id,
+                TagId = tagId
+            };
+          
+             _dbContext.PostTags.Add(postTagToAdd);
+  
+        }
+
+        _dbContext.SaveChanges();
+
+        return Ok();
+    }
+
 
 }
