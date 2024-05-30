@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { getPostById } from "../../managers/postManager";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import {
   Card,
   CardBody,
@@ -37,6 +37,9 @@ export const PostDetails = () => {
           <CardTitle tag="h5">{post.title}</CardTitle>
           <CardSubtitle className="mb-2 text-muted" tag="h6">
             {post.userProfile?.userName}
+          </CardSubtitle>
+          <CardSubtitle className="mb-2 text-muted" tag="h6">
+            <Link to ={`/posts/${post.id}/comments`}>View Comments</Link>
           </CardSubtitle>
           <CardText>{post.content}</CardText>
         </CardBody>
