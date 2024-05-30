@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Tabloid.Data;
 using Tabloid.Models;
+using Tabloid.Models.DTOs;
 
 namespace Tabloid.Controllers;
 
@@ -48,4 +49,43 @@ public class CommentController : ControllerBase
 
             return Ok(comments);
         }
+    
+    
+    
+     [HttpPost("create")]
+        public async Task<IActionResult> CreateComment([FromBody] CommentDTO commentDTO)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
+
+                var comment = new Comment
+                {
+                    UserProfileId = commentDTO.UserProfileId,
+                    PostId = commentDTO.PostId,
+                    Content = commentDTO.Content,
+                    Subject = commentDTO.Subject,
+                    DateOfComment = DateTime.Now 
+                };
+
+                _dbContext.Comments.Add(comment);
+                await _dbContext.SaveChangesAsync();
+
+                return CreatedAtAction(nameof(GetComments), new { id = comment.Id }, comment);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+
     }
+
+    
+    
+    
+    

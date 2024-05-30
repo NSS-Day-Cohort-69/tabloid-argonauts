@@ -13,18 +13,21 @@ export default function CreatePost({ loggedInUser }) {
 
   const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const newPost = {
-      title,
-      content,
-      headerImage,
-      category,
+    Title: title,
+    Content : content,
+    HeaderImage : headerImage,
+    CategoryId : category.id
     };
-
-    createPost(newPost).then(() => {
-      navigate("/posts");
-    });
+    try {
+      await createPost(newPost);
+      navigate(`/posts/${newPost.id}`)
+    }
+    catch (error) {
+      console.error("Error creating post:" , error)
+    }
   };
 
   useEffect(() => {
@@ -34,7 +37,7 @@ export default function CreatePost({ loggedInUser }) {
   return (
     <>
       <h2>Create A Post</h2>
-      <Form>
+      <Form onSubmit={handleSubmit}>
         <FormGroup>
           <Label>Title</Label>
           <Input
@@ -80,7 +83,7 @@ export default function CreatePost({ loggedInUser }) {
             ))}
           </Input>
         </FormGroup>
-        <Button onClick={handleSubmit}>Submit</Button>
+        <Button type="submit">Submit</Button>
       </Form>
     </>
   );
