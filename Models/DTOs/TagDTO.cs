@@ -4,4 +4,7 @@ namespace Tabloid.Models.DTOs;
     {
         public int Id { get; set; }
         public string TagName { get; set; }
+        public virtual List<PostTagDTO> PostTags { get; set; }
+
     }
+

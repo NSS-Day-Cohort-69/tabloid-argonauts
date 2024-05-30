@@ -7,6 +7,6 @@ namespace Tabloid.Models.DTOs;
         public int FollowedUserId { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
-        public UserProfile UserProfile {get; set;}
-        public UserProfile FollowedUser {get; set;}
+        public UserProfileDTO UserProfile {get; set;}
+        public UserProfileDTO FollowedUser {get; set;}
     }

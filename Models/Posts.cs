@@ -18,6 +18,7 @@ public class Post
         public virtual Category Category { get; set; }
         public virtual UserProfile UserProfile { get; set; }
         public virtual List<Comment> Comments { get; set; }
-        public virtual List<Reaction> Reactions { get; set; }
+        public virtual List<PostReaction> PostReactions { get; set; }
+        public virtual List<PostTag> PostTags { get; set; }
         public virtual List<Tag> Tags { get; set; }
     }

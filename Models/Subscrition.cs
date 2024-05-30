@@ -5,7 +5,6 @@ namespace Tabloid.Models;
  public class Subscription
     {
         public int Id { get; set; }
-        
         [Required]
         public int UserProfileId { get; set; }
        
