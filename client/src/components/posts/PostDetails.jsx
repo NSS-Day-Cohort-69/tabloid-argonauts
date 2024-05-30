@@ -18,6 +18,7 @@ import {
   Label,
   Input,
 } from "reactstrap";
+import { GetAllTags } from "../../managers/TagManager";
 
 export const PostDetails = ({ loggedInUser }) => {
   const [post, setPost] = useState({});
@@ -29,17 +30,11 @@ export const PostDetails = ({ loggedInUser }) => {
 
   useEffect(() => {
     getPostById(id).then((obj) => setPost(obj));
-  }, []);
+  }, [id]);
 
   // fetch tags from databaase
   useEffect(() => {
-    const tags = [
-      { id: 1, name: "tag1", postId: 1 },
-      { id: 2, name: "tag2", postId: 2 },
-      { id: 3, name: "tag3" },
-      { id: 4, name: "tag4" },
-    ];
-    setTags(tags);
+    GetAllTags().then((arr) => setTags(arr));
   }, []);
 
   const formatDate = (dateString) => {
@@ -71,7 +66,7 @@ export const PostDetails = ({ loggedInUser }) => {
             {post.userProfile?.userName}
           </CardSubtitle>
           <CardSubtitle className="mb-2 text-muted" tag="h6">
-            <Link to ={`/posts/${post.id}/comments`}>View Comments</Link>
+            <Link to={`/posts/${post.id}/comments`}>View Comments</Link>
           </CardSubtitle>
           <CardText>{post.content}</CardText>
           {post?.userProfile?.id == loggedInUser.id ? (
@@ -90,7 +85,7 @@ export const PostDetails = ({ loggedInUser }) => {
             {tags.map((t) => (
               <FormGroup check key={t.id}>
                 <Input id={t.id} type="checkbox" value={t.name} onChange />{" "}
-                <Label check>{t.name}</Label>
+                <Label check>{t.tagName}</Label>
               </FormGroup>
             ))}
           </Form>
