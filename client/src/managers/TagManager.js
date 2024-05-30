@@ -12,9 +12,13 @@ export const PostTag = (t) => {
     })
 }
 
-// export const EditTag = (t) => {
-//     return fetch(`${_apiUrl}/${}`)
-// }
+export const EditTag = (t) => {
+    return fetch(`${_apiUrl}/${t.id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json"},
+        body: JSON.stringify(t)
+    })
+}
 
 export const DeleteTag = (id) => {
     return fetch(`${_apiUrl}/${id}`, {

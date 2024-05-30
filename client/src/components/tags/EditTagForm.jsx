@@ -1,25 +1,27 @@
 import { useState } from "react";
-import { PostTag } from "../../managers/TagManager";
-import { useNavigate } from "react-router-dom";
+import { EditTag } from "../../managers/TagManager";
+import { useNavigate, useParams } from "react-router-dom";
 import { Button, Form, FormGroup, Input, Label } from "reactstrap";
 
 
-export const CreateTagForm = () => {
+export const EditTagForm = () => {
     const [tagName, setTagName] = useState("");
     const navigate = useNavigate();
+    const { id } = useParams();
 
     const submit = () => {
         const newTag = {
+            id,
             tagName
         }
-        PostTag(newTag).then(() => {
+        EditTag(newTag).then(() => {
             navigate("/tags")
         })
     }
 
     return (
         <div className="container">
-            <h4>Add a new tag!</h4>
+            <h4>Edit tag #{id}!</h4>
             <Form>
                 <FormGroup>
                     <Label>Tag Name</Label>

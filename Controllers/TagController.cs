@@ -57,7 +57,7 @@ public class TagController : ControllerBase
     }
 
 
-    [HttpDelete("delete/{id}")]
+    [HttpDelete("{id}")]
     //[Authorize]
     public IActionResult DeleteTag(int id)
     {

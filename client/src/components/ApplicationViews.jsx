@@ -10,6 +10,7 @@ import { PostsList } from "./posts/PostsList";
 import CategoryCreateForm from "./categories/CategoryCreateForm";
 import { TagsList } from "./tags/TagsList";
 import { CreateTagForm } from "./tags/CreateTagForm";
+import { EditTagForm } from "./tags/EditTagForm";
 
 
 export default function ApplicationViews({ loggedInUser, setLoggedInUser }) {
@@ -54,6 +55,9 @@ export default function ApplicationViews({ loggedInUser, setLoggedInUser }) {
           <Route 
             path="create" 
             element={<CreateTagForm />}
+          />
+          <Route path=":id"
+            element={<EditTagForm />}
           />
         </Route>
         <Route path="/categories">

@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react"
 import { Tags } from "./Tags"
-import { GetAllTags } from "../../managers/TagManager"
+import { DeleteTag, GetAllTags } from "../../managers/TagManager"
 import { Button } from "reactstrap"
 import { useNavigate } from "react-router-dom"
 
 export const TagsList = () => {
     const [tags, setTags] = useState([])
+    const [refresh, setRefresh] = useState(false);
     const navigate = useNavigate();
 
     const getAndSetTags = () => {
@@ -14,17 +15,17 @@ export const TagsList = () => {
 
     const handleEditClick = (e) => {
         const id = e.currentTarget.parentNode.id;
-        console.log(`Edit clicked for tag id: ${id}`);
+        navigate(`/tags/${id}`)
     };
     
     const handleDeleteClick = (e) => {
         const id = e.currentTarget.parentNode.id;
-        console.log(`Delete clicked for tag id: ${id}`);
+        DeleteTag(id).then(setRefresh(!refresh))
     };
 
     useEffect(() => {
         getAndSetTags();
-    }, [])
+    }, [refresh])
 
     //plan: delete and edit need IDs. Can I use the key?
     //Chatgpt says yes. Chatgpt is based.
