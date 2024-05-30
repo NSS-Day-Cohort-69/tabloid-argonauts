@@ -55,13 +55,8 @@ export default function ApplicationViews({ loggedInUser, setLoggedInUser }) {
               </AuthorizedRoute>
             }
           />
-          <Route 
-            path="create" 
-            element={<CreateTagForm />}
-          />
-          <Route path=":id"
-            element={<EditTagForm />}
-          />
+          <Route path="create" element={<CreateTagForm />} />
+          <Route path=":id" element={<EditTagForm />} />
         </Route>
         <Route path="/categories">
           <Route
@@ -92,7 +87,10 @@ export default function ApplicationViews({ loggedInUser, setLoggedInUser }) {
 
         <Route path="/posts">
           <Route index element={<PostsList />} />
-          <Route path=":id" element={<PostDetails />} />
+          <Route
+            path=":id"
+            element={<PostDetails loggedInUser={loggedInUser} />}
+          />
           <Route path=":id/comments" element={<ViewComments />} />
           <Route path="create" element={<CreatePost />} />
         </Route>
