@@ -14,6 +14,7 @@ import { EditTagForm } from "./tags/EditTagForm";
 import { PostDetails } from "./posts/PostDetails";
 import MyPostList from "./posts/MyPostList";
 import ViewComments from "./comments/ViewComments";
+import CreatePost from "./posts/CreatePost.jsx";
 
 export default function ApplicationViews({ loggedInUser, setLoggedInUser }) {
   return (
@@ -93,6 +94,7 @@ export default function ApplicationViews({ loggedInUser, setLoggedInUser }) {
           <Route index element={<PostsList />} />
           <Route path=":id" element={<PostDetails />} />
           <Route path=":id/comments" element={<ViewComments />} />
+          <Route path="create" element={<CreatePost />} />
         </Route>
 
         <Route
