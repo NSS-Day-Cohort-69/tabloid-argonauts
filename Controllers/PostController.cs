@@ -66,12 +66,22 @@ public class PostController : ControllerBase
         .Include(p => p.UserProfile)
         .SingleOrDefault(p => p.Id == id);
 
-        if(post == null)
+        if (post == null)
         {
             return NotFound();
         }
 
         return Ok(post);
+    }
+
+    [HttpPost]
+    //[Authorize]
+    public IActionResult CreatePost(Post post)
+    {
+        post.PublicationDate = DateTime.Now;
+        _dbContext.Posts.Add(post);
+        _dbContext.SaveChanges();
+        return Created($"/api/post/{post.Id}", post);
     }
 
 }

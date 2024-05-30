@@ -10,6 +10,7 @@ import { PostsList } from "./posts/PostsList";
 import CategoryCreateForm from "./categories/CategoryCreateForm";
 import { PostDetails } from "./posts/PostDetails";
 import MyPostList from "./posts/MyPostList";
+import CreatePost from "./posts/CreatePost.jsx";
 
 export default function ApplicationViews({ loggedInUser, setLoggedInUser }) {
   return (
@@ -71,6 +72,7 @@ export default function ApplicationViews({ loggedInUser, setLoggedInUser }) {
         <Route path="/posts">
           <Route index element={<PostsList />} />
           <Route path=":id" element={<PostDetails />} />
+          <Route path="create" element={<CreatePost />} />
         </Route>
 
         <Route
