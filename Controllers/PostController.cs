@@ -57,4 +57,21 @@ public class PostController : ControllerBase
         );
     }
 
+    [HttpGet("{id}")]
+    [Authorize]
+
+    public IActionResult GetPostById(int id)
+    {
+        Post post = _dbContext.Posts
+        .Include(p => p.UserProfile)
+        .SingleOrDefault(p => p.Id == id);
+
+        if(post == null)
+        {
+            return NotFound();
+        }
+
+        return Ok(post);
+    }
+
 }

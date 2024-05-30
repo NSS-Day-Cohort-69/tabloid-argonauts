@@ -11,7 +11,9 @@ import CategoryCreateForm from "./categories/CategoryCreateForm";
 import { TagsList } from "./tags/TagsList";
 import { CreateTagForm } from "./tags/CreateTagForm";
 import { EditTagForm } from "./tags/EditTagForm";
-
+import { PostDetails } from "./posts/PostDetails";
+import MyPostList from "./posts/MyPostList";
+import ViewComments from "./comments/ViewComments";
 
 export default function ApplicationViews({ loggedInUser, setLoggedInUser }) {
   return (
@@ -77,18 +79,21 @@ export default function ApplicationViews({ loggedInUser, setLoggedInUser }) {
               </AuthorizedRoute>
             }
           />
-          <Route path="/categories/create" 
-          element={
-            <AuthorizedRoute loggedInUser={loggedInUser} roles={["Admin"]}>
-               <CategoryCreateForm />
-            </AuthorizedRoute>
-          } 
-          /> 
+          <Route
+            path="/categories/create"
+            element={
+              <AuthorizedRoute loggedInUser={loggedInUser} roles={["Admin"]}>
+                <CategoryCreateForm />
+              </AuthorizedRoute>
+            }
+          />
         </Route>
 
         <Route path="/posts">
           <Route index element={<PostsList />} />
-         </Route>
+          <Route path=":id" element={<PostDetails />} />
+          <Route path=":id/comments" element={<ViewComments />} />
+        </Route>
 
         <Route
           path="login"
@@ -98,6 +103,12 @@ export default function ApplicationViews({ loggedInUser, setLoggedInUser }) {
           path="register"
           element={<Register setLoggedInUser={setLoggedInUser} />}
         />
+      </Route>
+      <Route path="/myposts">
+        <Route index element={<MyPostList loggedInUser={loggedInUser} />} />
+      </Route>
+      <Route path="/comments">
+        <Route index element={<ViewComments loggedInUser={loggedInUser} />} />
       </Route>
       <Route path="*" element={<p>Whoops, nothing here...</p>} />
     </Routes>

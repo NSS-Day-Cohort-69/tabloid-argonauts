@@ -22,6 +22,7 @@ export const PostsList = () => {
       <h1>Posts List</h1>
       {posts.map((p) => (
         <Card
+          key={p.id}
           style={{
             width: "10rem",
           }}
@@ -34,7 +35,7 @@ export const PostsList = () => {
             <CardText>{p.category?.categoryName}</CardText>
             <Button
               onClick={() => {
-                navigate(`/api/posts/${p.id}`);
+                navigate(`/posts/${p.id}`);
               }}
             >
               View Post
