@@ -1,7 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using Tabloid.Models;
 using Microsoft.AspNetCore.Identity;
+using Tabloid.Models;
+
 
 namespace Tabloid.Data
 {
@@ -17,6 +18,7 @@ namespace Tabloid.Data
         public DbSet<Tag> Tags { get; set; }
         public DbSet<Subscription> Subscriptions { get; set; }
         public DbSet<PostTag> PostTags { get; set; }
+        public DbSet<PostReaction> postReactions { get; set; }
 
         public TabloidDbContext(DbContextOptions<TabloidDbContext> options, IConfiguration config) : base(options)
         {
@@ -26,6 +28,31 @@ namespace Tabloid.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<PostReaction>().HasKey(pr => new {pr.UserProfileId, pr.PostId, pr.ReactionId});
+            modelBuilder.Entity<PostTag>().HasKey(pt => new {pt.PostId, pt.TagId});
+
+            modelBuilder.Entity<PostReaction>()
+            .HasOne(pr => pr.Post)
+            .WithMany(p => p.PostReactions)
+            .HasForeignKey(pr => pr.PostId);
+            modelBuilder.Entity<PostReaction>()
+            .HasOne(pr => pr.Reaction)
+            .WithMany(r => r.PostReactions)
+            .HasForeignKey(pr => pr.ReactionId);
+            modelBuilder.Entity<PostReaction>()
+            .HasOne(pr => pr.UserProfile)
+            .WithMany(p => p.PostReactions)
+            .HasForeignKey(pr => pr.UserProfileId);
+
+            modelBuilder.Entity<PostTag>()
+            .HasOne(pt => pt.Post)
+            .WithMany(p => p.PostTags)
+            .HasForeignKey(pt => pt.PostId);
+            modelBuilder.Entity<PostTag>()
+            .HasOne(pt => pt.Tag)
+            .WithMany(t => t.PostTags)
+            .HasForeignKey(pt => pt.TagId);
 
             
             modelBuilder.Entity<IdentityRole>().HasData(new IdentityRole
