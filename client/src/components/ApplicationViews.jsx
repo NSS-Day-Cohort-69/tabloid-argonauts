@@ -10,6 +10,7 @@ import { PostsList } from "./posts/PostsList";
 import CategoryCreateForm from "./categories/CategoryCreateForm";
 import { PostDetails } from "./posts/PostDetails";
 import MyPostList from "./posts/MyPostList";
+import ViewComments from "./comments/ViewComments";
 import CreatePost from "./posts/CreatePost.jsx";
 
 export default function ApplicationViews({ loggedInUser, setLoggedInUser }) {
@@ -72,6 +73,7 @@ export default function ApplicationViews({ loggedInUser, setLoggedInUser }) {
         <Route path="/posts">
           <Route index element={<PostsList />} />
           <Route path=":id" element={<PostDetails />} />
+          <Route path=":id/comments" element={<ViewComments />} />
           <Route path="create" element={<CreatePost />} />
         </Route>
 
@@ -86,6 +88,9 @@ export default function ApplicationViews({ loggedInUser, setLoggedInUser }) {
       </Route>
       <Route path="/myposts">
         <Route index element={<MyPostList loggedInUser={loggedInUser} />} />
+      </Route>
+      <Route path="/comments">
+        <Route index element={<ViewComments loggedInUser={loggedInUser} />} />
       </Route>
       <Route path="*" element={<p>Whoops, nothing here...</p>} />
     </Routes>
