@@ -16,6 +16,7 @@ namespace Tabloid.Data
         public DbSet<Reaction> Reactions { get; set; }
         public DbSet<Tag> Tags { get; set; }
         public DbSet<Subscription> Subscriptions { get; set; }
+        public DbSet<PostTag> PostTags { get; set; }
 
         public TabloidDbContext(DbContextOptions<TabloidDbContext> options, IConfiguration config) : base(options)
         {
