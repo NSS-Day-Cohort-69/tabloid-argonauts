@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { getPostById } from "../../managers/postManager";
-import { Link, useParams } from "react-router-dom";
+import { deletePost, getPostById } from "../../managers/postManager";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import {
   Card,
   CardBody,
@@ -27,6 +27,10 @@ export const PostDetails = ({ loggedInUser }) => {
   const [tagSelections, setTagSelections] = useState([]);
   const { id } = useParams();
   const toggle = () => setModal(!modal);
+  const [showConfirmation, setShowConfirmation] = useState(false);
+  const [postToDelete, setPostToDelete] = useState(null);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     getPostById(id).then((obj) => setPost(obj));
@@ -51,6 +55,25 @@ export const PostDetails = ({ loggedInUser }) => {
     }
   };
 
+  const handleDeletePost = async (postId) => {
+    try {
+      await deletePost(postId).then(() => {
+        navigate("/myposts")
+      });
+    } catch (error) {
+      console.error('Error deleting this post:', error);
+    }
+  }
+
+  const handleConfirmDelete = () => {
+    handleDeletePost(postToDelete);
+    setShowConfirmation(false);
+  };
+
+  const handleCancelDelete = () => {
+    setShowConfirmation(false);
+  };
+
   return (
     <>
       <Card
@@ -70,7 +93,21 @@ export const PostDetails = ({ loggedInUser }) => {
           </CardSubtitle>
           <CardText>{post.content}</CardText>
           {post?.userProfile?.id == loggedInUser.id ? (
+            <>
             <Button onClick={toggle}>Manage Tags</Button>
+            <Button onClick={() => {
+              setPostToDelete(post.id);
+              setShowConfirmation(true);
+            }}>Delete</Button>
+
+        {showConfirmation && (
+          <div className="confirmation-modal">
+            <p>Are you sure you want to delete this post?</p>
+            <button onClick={handleConfirmDelete}>Delete</button>
+            <button onClick={handleCancelDelete}>Cancel</button>
+          </div>
+        )}
+            </>
           ) : (
             ""
           )}
