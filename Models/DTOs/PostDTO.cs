@@ -13,4 +13,7 @@ namespace Tabloid.Models.DTOs;
         public int UserProfileId { get; set; }
         public UserProfile UserProfile {get; set;}
         public bool IsApproved { get; set; }
+         public virtual List<PostReactionDTO> PostReactions { get; set; }
+        public virtual List<PostTagDTO> PostTags { get; set; }
+        public virtual List<TagDTO> Tags { get; set; }
     }

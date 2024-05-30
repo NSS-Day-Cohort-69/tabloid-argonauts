@@ -16,4 +16,5 @@ namespace Tabloid.Models;
 
         public virtual Post Post { get; set; }
         public virtual UserProfile UserProfile { get; set; }
+        public virtual List<PostReaction> PostReactions { get; set; }
     }

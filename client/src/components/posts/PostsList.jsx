@@ -19,7 +19,6 @@ export const PostsList = () => {
   }, []);
   return (
     <>
-      <h1>Posts List</h1>
       {posts.map((p) => (
         <Card
           key={p.id}
