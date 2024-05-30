@@ -2,25 +2,24 @@ import React, { useState } from "react";
 import { createComment } from "../../managers/commentManager";
 import { useNavigate } from "react-router-dom";
 
-const CommentForm = ({ postId }) => {
+const CommentForm = ({ postId, loggedInUser }) => {
   const [subject, setSubject] = useState("");
   const [content, setContent] = useState("");
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
+    // debugger
     e.preventDefault();
-    try {
       const commentDTO = {
-        subject,
-        content,
-        postId,
-        dateOfComment: new Date().toISOString(),
+        Subject : subject,
+        Content : content,
+        PostId : postId,
+        userProfileId : loggedInUser.id,
       };
+    //   debugger
       await createComment(commentDTO);
+      
       navigate(`/posts/${postId}/comments`);
-    } catch (error) {
-      console.error("Error creating comment:", error);
-    }
   };
 
   return (

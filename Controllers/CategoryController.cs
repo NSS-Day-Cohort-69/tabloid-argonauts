@@ -21,100 +21,99 @@ public class CategoryController : ControllerBase
     }
 
 
-  [HttpGet]
- 
-        public IActionResult GetCategories()
-        {
-            var categories = _dbContext.Categories.ToList();
+    [HttpGet]
 
-            var categoryDTOs = categories.Select(c => new CategoryDTO
-            {
-                Id = c.Id,
-                CategoryName = c.CategoryName
-            })
-            .ToList();
-
-            return Ok(categoryDTOs);
-        }
-    
-
-[HttpDelete("{id}")]
-        public IActionResult DeleteCategory(int id)
-        {
-            try
-            {
-                var category = _dbContext.Categories.Find(id);
-                if (category == null)
-                {
-                    return NotFound(); 
-                }
-
-                _dbContext.Categories.Remove(category);
-                _dbContext.SaveChanges();
-
-                return NoContent(); 
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"Internal server error: {ex.Message}"); 
-            }
-        }
-
-
-
-[HttpPut("{id}")]
-public IActionResult UpdateCategory(int id, [FromBody] CategoryDTO categoryDTO)
-{
-    try
+    public IActionResult GetCategories()
     {
-        var category = _dbContext.Categories.Find(id);
-        if (category == null)
+        var categories = _dbContext.Categories.ToList();
+
+        var categoryDTOs = categories.Select(c => new CategoryDTO
         {
-            return NotFound(); 
-        }
+            Id = c.Id,
+            CategoryName = c.CategoryName
+        })
+        .ToList();
 
-  
-        category.CategoryName = categoryDTO.CategoryName;
-
-        _dbContext.SaveChanges();
-
-        return NoContent(); 
+        return Ok(categoryDTOs);
     }
-    catch (Exception ex)
+
+
+    [HttpDelete("{id}")]
+    public IActionResult DeleteCategory(int id)
     {
-        return StatusCode(500, $"Internal server error: {ex.Message}"); 
+        try
+        {
+            var category = _dbContext.Categories.Find(id);
+            if (category == null)
+            {
+                return NotFound();
+            }
+
+            _dbContext.Categories.Remove(category);
+            _dbContext.SaveChanges();
+
+            return NoContent();
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, $"Internal server error: {ex.Message}");
+        }
     }
+
+
+    [HttpPut("{id}")]
+    public IActionResult UpdateCategory(int id, [FromBody] CategoryDTO categoryDTO)
+    {
+        try
+        {
+            var category = _dbContext.Categories.Find(id);
+            if (category == null)
+            {
+                return NotFound();
+            }
+
+
+            category.CategoryName = categoryDTO.CategoryName;
+
+            _dbContext.SaveChanges();
+
+            return NoContent();
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, $"Internal server error: {ex.Message}");
+        }
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> CreateCategory([FromBody] CategoryDTO categoryDTO)
+    {
+        try
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var category = new Category
+            {
+                CategoryName = categoryDTO.CategoryName
+            };
+
+            _dbContext.Categories.Add(category);
+            await _dbContext.SaveChangesAsync();
+
+            return CreatedAtAction(nameof(GetCategories), category);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, $"Internal server error: {ex.Message}");
+        }
+    }
+
+
+
 }
-
-     [HttpPost]
-        public async Task<IActionResult> CreateCategory([FromBody] CategoryDTO categoryDTO)
-        {
-            try
-            {
-                if (!ModelState.IsValid)
-                {
-                    return BadRequest(ModelState);
-                }
-
-                var category = new Category
-                {
-                    CategoryName = categoryDTO.CategoryName
-                };
-
-                _dbContext.Categories.Add(category);
-                await _dbContext.SaveChangesAsync();
-
-                return CreatedAtAction(nameof(GetCategories), category);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"Internal server error: {ex.Message}");
-            }
-        }
-
-
-    
-    }
 
 
 

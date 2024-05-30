@@ -6,8 +6,7 @@ export const getCommentsByPostId = (postId) => {
 };
 
 export const createComment = async (commentDTO) => {
-    try {
-        const response = await fetch(_apiUrl, {
+        const response = await fetch(`${_apiUrl}/create`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -15,14 +14,7 @@ export const createComment = async (commentDTO) => {
             body: JSON.stringify(commentDTO)
         });
 
-        if (!response.ok) {
-            throw new Error('Failed to create comment');
-        }
-
         const data = await response.json();
         return data;
-    } catch (error) {
-        console.error('Error creating comment:', error);
-        throw error;
-    }
+   
 };

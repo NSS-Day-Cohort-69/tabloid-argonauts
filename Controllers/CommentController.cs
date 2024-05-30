@@ -52,7 +52,7 @@ public class CommentController : ControllerBase
     
     
     
-     [HttpPost]
+     [HttpPost("create")]
         public async Task<IActionResult> CreateComment([FromBody] CommentDTO commentDTO)
         {
             try

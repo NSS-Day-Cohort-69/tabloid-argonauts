@@ -11,9 +11,15 @@ import {
 } from "reactstrap";
 import CommentForm from "../comments/commentForm";
 
-export const PostDetails = () => {
+
+export const PostDetails = ({ loggedInUser}) => {
   const [post, setPost] = useState({});
   const { id } = useParams();
+  const [showCommentForm, setShowCommentForm] = useState(false);
+
+  const toggleCommentForm = () => {
+    setShowCommentForm((prev) => !prev);
+  };
 
   useEffect(() => {
     getPostById(id).then((obj) => setPost(obj));
@@ -45,7 +51,13 @@ export const PostDetails = () => {
           <CardText>{post.content}</CardText>
         </CardBody>
         <CardFooter>{formatDate(post.publicationDate)}</CardFooter>
-        <CommentButton postId={post.id} />
+        {/* <CommentButton postId={post.id} /> */}
+        <div>
+      <button className="btn btn-primary" onClick={toggleCommentForm}>
+        {showCommentForm ? "Hide Comment Form" : "Add Comment"}
+      </button>
+      {showCommentForm && <CommentForm postId={post.id} loggedInUser={loggedInUser}  />}
+    </div>
       </Card>
     </>
   );
@@ -129,19 +141,19 @@ export const PostDetails = () => {
 
 
 
-const CommentButton = ({ postId }) => {
-  const [showCommentForm, setShowCommentForm] = useState(false);
+// export const CommentButton = ({ postId, loggedInUser }) => {
+//   const [showCommentForm, setShowCommentForm] = useState(false);
 
-  const toggleCommentForm = () => {
-    setShowCommentForm((prev) => !prev);
-  };
+//   const toggleCommentForm = () => {
+//     setShowCommentForm((prev) => !prev);
+//   };
 
-  return (
-    <div>
-      <button className="btn btn-primary" onClick={toggleCommentForm}>
-        {showCommentForm ? "Hide Comment Form" : "Add Comment"}
-      </button>
-      {showCommentForm && <CommentForm postId={postId} />}
-    </div>
-  );
-};
+//   return (
+//     <div>
+//       <button className="btn btn-primary" onClick={toggleCommentForm}>
+//         {showCommentForm ? "Hide Comment Form" : "Add Comment"}
+//       </button>
+//       {showCommentForm && <CommentForm postId={postId} loggedInUser={loggedInUser}  />}
+//     </div>
+//   );
+// };
