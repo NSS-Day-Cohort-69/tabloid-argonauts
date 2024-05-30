@@ -19,14 +19,21 @@ import {
   Input,
 } from "reactstrap";
 import { GetAllTags } from "../../managers/TagManager";
+import CommentForm from "../comments/commentForm";
 
-export const PostDetails = ({ loggedInUser }) => {
+
+export const PostDetails = ({ loggedInUser }{ loggedInUser}) => {
   const [post, setPost] = useState({});
   const [modal, setModal] = useState(false);
   const [tags, setTags] = useState([]);
   const [tagSelections, setTagSelections] = useState([]);
   const { id } = useParams();
   const toggle = () => setModal(!modal);
+  const [showCommentForm, setShowCommentForm] = useState(false);
+
+  const toggleCommentForm = () => {
+    setShowCommentForm((prev) => !prev);
+  };
 
   useEffect(() => {
     getPostById(id).then((obj) => setPost(obj));
@@ -76,6 +83,13 @@ export const PostDetails = ({ loggedInUser }) => {
           )}
         </CardBody>
         <CardFooter>{formatDate(post.publicationDate)}</CardFooter>
+        {/* <CommentButton postId={post.id} /> */}
+        <div>
+      <button className="btn btn-primary" onClick={toggleCommentForm}>
+        {showCommentForm ? "Hide Comment Form" : "Add Comment"}
+      </button>
+      {showCommentForm && <CommentForm postId={post.id} loggedInUser={loggedInUser}  />}
+    </div>
       </Card>
 
       <Modal isOpen={modal} toggle={toggle}>
@@ -100,3 +114,98 @@ export const PostDetails = ({ loggedInUser }) => {
     </>
   );
 };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// export const CommentButton = ({ postId, loggedInUser }) => {
+//   const [showCommentForm, setShowCommentForm] = useState(false);
+
+//   const toggleCommentForm = () => {
+//     setShowCommentForm((prev) => !prev);
+//   };
+
+//   return (
+//     <div>
+//       <button className="btn btn-primary" onClick={toggleCommentForm}>
+//         {showCommentForm ? "Hide Comment Form" : "Add Comment"}
+//       </button>
+//       {showCommentForm && <CommentForm postId={postId} loggedInUser={loggedInUser}  />}
+//     </div>
+//   );
+// };
