@@ -1,11 +1,13 @@
 import { useState, useEffect } from "react";
 import { getPosts } from "../../managers/postManager";
 import { Button, Card, CardBody, CardSubtitle, CardText, CardTitle } from "reactstrap";
+import { SearchBar } from "../tags/SearchBar";
 
 
 
 const MyPostList = ({ loggedInUser }) => {
     const [posts, setPosts] = useState([]);
+    const [searchTerm, setSearchTerm] = useState("")
 
     useEffect(() => {
         const fetchData = async () => {
@@ -23,8 +25,16 @@ const MyPostList = ({ loggedInUser }) => {
         fetchData();
     }, [loggedInUser]);
 
+    useEffect(() => {
+        const foundPosts = posts.filter(eventObject => eventObject.description.toLowerCase().includes(searchTerm.toLowerCase()))
+        setPosts(foundPosts)
+    }, [searchTerm, posts])
+
     return (
-        <>
+        <div className="container">
+            <SearchBar
+                setSearchTerm={setSearchTerm}
+            />
             <h1>Posts List</h1>
             {posts.map((p) => (
                 <Card
@@ -49,7 +59,7 @@ const MyPostList = ({ loggedInUser }) => {
                     </CardBody>
                 </Card>
             ))}
-        </>
+        </div>
     );
 };
 

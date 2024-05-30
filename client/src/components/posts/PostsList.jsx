@@ -9,16 +9,29 @@ import {
   Button,
 } from "reactstrap";
 import { useNavigate } from "react-router-dom";
+import { SearchBar } from "../tags/SearchBar";
+
+
 
 export const PostsList = () => {
   const [posts, setPosts] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("")
   const navigate = useNavigate();
 
   useEffect(() => {
     getPosts().then((arr) => setPosts(arr));
   }, []);
+
+  useEffect(() => {
+    const foundPosts = posts.filter(post => post.content.toLowerCase().includes(searchTerm.toLowerCase()))
+    setPosts(foundPosts)
+  }, [searchTerm])
+
   return (
-    <>
+    <div>
+      <SearchBar
+        setSearchTerm={setSearchTerm}
+      />
       <h1>Posts List</h1>
       {posts.map((p) => (
         <Card
@@ -43,6 +56,6 @@ export const PostsList = () => {
           </CardBody>
         </Card>
       ))}
-    </>
+    </div>
   );
 };
