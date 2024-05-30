@@ -60,7 +60,9 @@ public class CategoryController : ControllerBase
             }
         }
 
-    [HttpPut("{id}")]
+
+
+[HttpPut("{id}")]
 public IActionResult UpdateCategory(int id, [FromBody] CategoryDTO categoryDTO)
 {
     try
