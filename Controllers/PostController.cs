@@ -118,29 +118,6 @@ public class PostController : ControllerBase
         return Created($"/api/post/{post.Id}", post);
     }
 
-    [HttpDelete("{id}")]
-    //[Authorize]
-    public IActionResult DeletePost(int id)
-    {
-        try
-        {
-            var post = _dbContext.Posts.Find(id);
-            if (post == null)
-            {
-                return NotFound();
-            }
-
-            _dbContext.Posts.Remove(post);
-            _dbContext.SaveChanges();
-
-            return NoContent();
-        }
-        catch (Exception ex)
-        {
-            return StatusCode(500, $"Internal server error: {ex.Message}");
-        }
-    }
-
     [HttpPost("{id}")]
     // [Authorize]
     public IActionResult NewPostTag(int id, List<int> tagIds)
@@ -173,5 +150,28 @@ public class PostController : ControllerBase
         return Ok();
     }
 
+
+    [HttpDelete("{id}")]
+    //[Authorize]
+    public IActionResult DeletePost(int id)
+    {
+        try
+        {
+            var post = _dbContext.Posts.Find(id);
+            if (post == null)
+            {
+                return NotFound();
+            }
+
+            _dbContext.Posts.Remove(post);
+            _dbContext.SaveChanges();
+
+            return NoContent();
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, $"Internal server error: {ex.Message}");
+        }
+    }
 
 }

@@ -40,16 +40,21 @@ export default function NavBar({ loggedInUser, setLoggedInUser }) {
                         Category Management
                       </NavLink>
                     </NavItem>
+                    <NavItem>
+                      <NavLink tag={RRNavLink} to="/reactions">
+                        Reaction Management
+                      </NavLink>
+                    </NavItem>
+                    <NavItem>
+                      <NavLink tag={RRNavLink} to="/tags">
+                        Tag Management
+                      </NavLink>
+                    </NavItem>
                   </>
                 )}
                 <NavItem>
                   <NavLink tag={RRNavLink} to="/posts">
                     Posts
-                  </NavLink>
-                </NavItem>
-                <NavItem>
-                  <NavLink tag={RRNavLink} to="/tags">
-                    Tags
                   </NavLink>
                 </NavItem>
                 <NavItem>

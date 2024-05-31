@@ -1,12 +1,10 @@
 import { useEffect, useState } from "react";
 import {
   createPostTag,
-  deletePostTag,
   getPostById,
+  deletePost,
 } from "../../managers/postManager";
-import { Link, useParams } from "react-router-dom";
-import { deletePost, getPostById } from "../../managers/postManager";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, useParams, useNavigate } from "react-router-dom";
 import {
   Card,
   CardBody,
@@ -26,9 +24,10 @@ import {
 } from "reactstrap";
 import { GetAllTags } from "../../managers/TagManager";
 import CommentForm from "../comments/commentForm";
+import { GetReactions } from "../../managers/reactionManager";
+import "./posts.css";
 
-
-export const PostDetails = ({ loggedInUser }{ loggedInUser}) => {
+export const PostDetails = ({ loggedInUser }) => {
   const [post, setPost] = useState({});
   const [modal, setModal] = useState(false);
   const [tags, setTags] = useState([]);
@@ -36,10 +35,18 @@ export const PostDetails = ({ loggedInUser }{ loggedInUser}) => {
   const { id } = useParams();
   const toggle = () => setModal(!modal);
   const [showCommentForm, setShowCommentForm] = useState(false);
+  const [showConfirmation, setShowConfirmation] = useState();
+  const [reactions, setReactions] = useState([]);
+  const [postToDelete, setPostToDelete] = useState();
+  const navigate = useNavigate();
 
   const toggleCommentForm = () => {
     setShowCommentForm((prev) => !prev);
   };
+
+  useEffect(() => {
+    GetReactions().then(setReactions);
+  }, []);
 
   useEffect(() => {
     getPostById(id).then((obj) => setPost(obj));
@@ -73,18 +80,20 @@ export const PostDetails = ({ loggedInUser }{ loggedInUser}) => {
   };
 
   const handleSubmit = (id, tagSelections) => {
-    createPostTag(id, tagSelections);
+    createPostTag(id, tagSelections).then(() => {
+      toggle();
+    });
   };
 
   const handleDeletePost = async (postId) => {
     try {
       await deletePost(postId).then(() => {
-        navigate("/myposts")
+        navigate("/myposts");
       });
     } catch (error) {
-      console.error('Error deleting this post:', error);
+      console.error("Error deleting this post:", error);
     }
-  }
+  };
 
   const handleConfirmDelete = () => {
     handleDeletePost(postToDelete);
@@ -115,32 +124,50 @@ export const PostDetails = ({ loggedInUser }{ loggedInUser}) => {
           <CardText>{post.content}</CardText>
           {post?.userProfile?.id == loggedInUser.id ? (
             <>
-            <Button onClick={toggle}>Manage Tags</Button>
-            <Button onClick={() => {
-              setPostToDelete(post.id);
-              setShowConfirmation(true);
-            }}>Delete</Button>
+              <div className="post-btns">
+                <Button onClick={toggle}>Manage Tags</Button>
+                <Button
+                  onClick={() => {
+                    setPostToDelete(post.id);
+                    setShowConfirmation(true);
+                  }}
+                >
+                  Delete
+                </Button>
+              </div>
 
-        {showConfirmation && (
-          <div className="confirmation-modal">
-            <p>Are you sure you want to delete this post?</p>
-            <button onClick={handleConfirmDelete}>Delete</button>
-            <button onClick={handleCancelDelete}>Cancel</button>
-          </div>
-        )}
+              {showConfirmation && (
+                <div className="confirmation-modal">
+                  <p>Are you sure you want to delete this post?</p>
+                  <button onClick={handleConfirmDelete}>Delete</button>
+                  <button onClick={handleCancelDelete}>Cancel</button>
+                </div>
+              )}
             </>
           ) : (
-            ""
+            <div>
+              <button className="btn btn-primary" onClick={toggleCommentForm}>
+                {showCommentForm ? "Hide Comment Form" : "Add Comment"}
+              </button>
+              {showCommentForm && (
+                <CommentForm postId={post.id} loggedInUser={loggedInUser} />
+              )}
+            </div>
           )}
+
+          {reactions.map((r) => (
+            <div className="reaction-images">
+              <img
+                src={r.image}
+                alt="reaction image"
+                className="reaction-image"
+              />
+              <div className="reaction-count">1</div>
+            </div>
+          ))}
         </CardBody>
         <CardFooter>{formatDate(post.publicationDate)}</CardFooter>
         {/* <CommentButton postId={post.id} /> */}
-        <div>
-      <button className="btn btn-primary" onClick={toggleCommentForm}>
-        {showCommentForm ? "Hide Comment Form" : "Add Comment"}
-      </button>
-      {showCommentForm && <CommentForm postId={post.id} loggedInUser={loggedInUser}  />}
-    </div>
       </Card>
 
       <Modal isOpen={modal} toggle={toggle}>
@@ -176,84 +203,6 @@ export const PostDetails = ({ loggedInUser }{ loggedInUser}) => {
     </>
   );
 };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 // export const CommentButton = ({ postId, loggedInUser }) => {
 //   const [showCommentForm, setShowCommentForm] = useState(false);

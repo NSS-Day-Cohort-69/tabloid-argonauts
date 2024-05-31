@@ -1,0 +1,17 @@
+.reaction-image {
+  display: inline;
+  width: 50px;
+  margin: 10px;
+}
+
+.reaction-images {
+  display: inline;
+}
+
+.post-btns {
+  display: block;
+}
+
+.reaction-count {
+  display: inline;
+}
