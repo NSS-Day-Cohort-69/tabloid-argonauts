@@ -48,7 +48,7 @@ public class UserProfileController : ControllerBase
     }
 
     [HttpPost("promote/{id}")]
-    [Authorize(Roles = "Admin")]
+    // [Authorize(Roles = "Admin")]
     public IActionResult Promote(string id)
     {
         IdentityRole role = _dbContext.Roles.SingleOrDefault(r => r.Name == "Admin");
@@ -94,6 +94,35 @@ public class UserProfileController : ControllerBase
         }
         user.Email = user.IdentityUser.Email;
         user.UserName = user.IdentityUser.UserName;
+        return Ok(user);
+    }
+
+    [HttpGet("{id}/withroles")]
+    [Authorize(Roles = "Admin")]
+    public IActionResult GetByIdWithRoles(int id)
+    {
+        var user = _dbContext.UserProfiles
+            .Include(up => up.IdentityUser)
+            .Where(up => up.Id == id)
+            .Select(up => new
+            {
+                up.Id,
+                up.FirstName,
+                up.LastName,
+                Email = up.IdentityUser.Email,
+                UserName = up.IdentityUser.UserName,
+                up.IdentityUserId,
+                Roles = _dbContext.UserRoles
+                    .Where(ur => ur.UserId == up.IdentityUserId)
+                    .Select(ur => _dbContext.Roles.SingleOrDefault(r => r.Id == ur.RoleId).Name)
+                    .ToList()
+            }).SingleOrDefault();
+
+        if (user == null)
+        {
+            return NotFound();
+        }
+
         return Ok(user);
     }
 }
