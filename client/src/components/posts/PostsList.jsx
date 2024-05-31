@@ -7,42 +7,114 @@ import {
   CardSubtitle,
   CardText,
   Button,
+  FormGroup,
+  Label,
+  Input,
+  Form,
+  Dropdown,
+  DropdownMenu,
+  DropdownItem,
+  DropdownToggle,
 } from "reactstrap";
 import { useNavigate } from "react-router-dom";
-import { SearchBar } from "../tags/SearchBar";
-
-
+import { getAllCategories } from "../../managers/categoryManager";
+import "./posts.css";
 
 export const PostsList = () => {
   const [posts, setPosts] = useState([]);
-  const [filteredPosts, setFilteredPosts] = useState([]);
-  const [searchTerm, setSearchTerm] = useState("")
+  const [searchTerm, setSearchTerm] = useState("");
+  const [categories, setCategories] = useState([]);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [categorySearch, setCategorySearch] = useState("");
   const navigate = useNavigate();
 
   useEffect(() => {
     getPosts().then((arr) => setPosts(arr));
+  }, [searchTerm]);
+
+  const toggle = () => setDropdownOpen((prevState) => !prevState);
+
+  const clearSearchFilters = () => {
+    getPosts().then((arr) => setPosts(arr));
+  };
+
+  useEffect(() => {
+    getAllCategories().then(setCategories);
   }, []);
 
-  useEffect(() => {
-    setFilteredPosts(posts)
-  }, [posts])
+  // useEffect(() => {
+  //   setFilteredPosts(posts)
+  // }, [posts])
 
-  useEffect(() => {
-    const foundPosts = posts.filter(post => 
-      post.postTags && post.postTags.some(pt => 
-        pt.tag.tagName && pt.tag.tagName.toLowerCase().includes(searchTerm.toLowerCase())
-      )
-    );
-    setFilteredPosts(foundPosts)
-  }, [searchTerm])
+  // useEffect(() => {
+  //   const foundPosts = posts.filter(post =>
+  //     post.postTags && post.postTags.some(pt =>
+  //       pt.tag.tagName && pt.tag.tagName.toLowerCase().includes(searchTerm.toLowerCase())
+  //     )
+  //   );
+  //   setFilteredPosts(foundPosts)
+  // }, [searchTerm])
 
+  const handleSearchInputChange = (event) => {
+    setSearchTerm(event.target.value);
+  };
+
+  const handleSearchSubmit = (event) => {
+    event.preventDefault();
+    getPosts(searchTerm).then(setPosts);
+  };
+
+  const handleCategoryInputChange = (event) => {
+    const selectedCategoryId = event.currentTarget.getAttribute("value");
+    setCategorySearch(selectedCategoryId);
+    getPosts("", parseInt(selectedCategoryId)).then(setPosts);
+  };
   return (
-    <div>
-      <SearchBar
-        setSearchTerm={setSearchTerm}
-      />
-      <h1>Posts List</h1>
-      {filteredPosts.map((p) => (
+    <>
+      <div>
+        <Form inline onSubmit={handleSearchSubmit}>
+          <FormGroup>
+            <Label for="search" hidden>
+              Search
+            </Label>
+            <Input
+              type="text"
+              name="search"
+              id="search"
+              placeholder="Search by tag"
+              value={searchTerm}
+              onChange={handleSearchInputChange}
+            />
+          </FormGroup>
+          <Button type="submit">Search</Button>
+        </Form>
+      </div>
+
+      <div className="search-controls">
+        <Dropdown isOpen={dropdownOpen} toggle={toggle}>
+          <DropdownToggle caret>Sort By Category</DropdownToggle>
+          <DropdownMenu>
+            {categories.map((c) => (
+              <DropdownItem
+                key={c.id}
+                value={c.id}
+                onClick={handleCategoryInputChange}
+              >
+                {c.categoryName}
+              </DropdownItem>
+            ))}
+          </DropdownMenu>
+        </Dropdown>
+        <Button
+          onClick={() => {
+            clearSearchFilters();
+          }}
+        >
+          Clear filters
+        </Button>
+      </div>
+
+      {posts.map((p) => (
         <Card
           key={p.id}
           style={{
@@ -65,6 +137,6 @@ export const PostsList = () => {
           </CardBody>
         </Card>
       ))}
-    </div>
+    </>
   );
 };

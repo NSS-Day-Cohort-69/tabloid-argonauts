@@ -22,13 +22,14 @@ public class PostController : ControllerBase
     [HttpGet]
     // [Authorize]
 
-    public IActionResult GetPosts()
+    public IActionResult GetPosts(string? search, int? categoryId)
     {
-        return Ok(_dbContext.Posts
+
+        List<Post> posts = _dbContext.Posts
         .Include(p => p.UserProfile)
         .Include(p => p.Category)
         .Include(p => p.PostTags)
-        .ThenInclude(pt => pt.Tag) 
+        .ThenInclude(pt => pt.Tag)
         .Include(p => p.PostReactions)
         .Select(p => new Post
         {
@@ -62,12 +63,30 @@ public class PostController : ControllerBase
                 {
                     Id = pt.Tag.Id,
                     TagName = pt.Tag.TagName
-                },
+                }
             }).ToList()
         })
         .Where(p => p.IsApproved == true && p.PublicationDate < DateTime.Now)
-        .OrderByDescending(p => p.PublicationDate)
-        );
+        .OrderByDescending(p => p.PublicationDate).ToList();
+
+        if(search != null)
+        {
+            posts = posts.Where(p => p.PostTags.Any(pt => pt.Tag.TagName.ToUpper().Contains(search.ToUpper()))).ToList();
+        }
+
+        if(categoryId != null)
+        {
+            posts = posts.Where(p => p.CategoryId == categoryId).ToList();
+        }
+
+        if(search != null & categoryId != null)
+        {
+          posts = posts.Where(p => p.PostTags.Any(pt => pt.Tag.TagName.ToUpper().Contains(search.ToUpper())) && p.CategoryId == categoryId).ToList();
+
+        }
+
+        return Ok(posts);
+
     }
 
     [HttpGet("{id}")]
