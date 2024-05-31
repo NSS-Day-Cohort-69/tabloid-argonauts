@@ -325,41 +325,32 @@ namespace Tabloid.Data
                 {
                     Id = 1,
                     Image = "https://via.placeholder.com/150",
-                    Name = "Reaction 1",
-                    PostId = 1,
-                    UserProfileId = 1
+                    Name = "Reaction 1"
                 },
                 new Reaction
                 {
                     Id = 2,
                     Image = "https://via.placeholder.com/150",
                     Name = "Reaction 2",
-                    PostId = 2,
-                    UserProfileId = 2
+                
                 },
                 new Reaction
                 {
                     Id = 3,
                     Image = "https://via.placeholder.com/150",
-                    Name = "Reaction 3",
-                    PostId = 3,
-                    UserProfileId = 3
+                    Name = "Reaction 3"
                 },
                 new Reaction
                 {
                     Id = 4,
                     Image = "https://via.placeholder.com/150",
                     Name = "Reaction 4",
-                    PostId = 4,
-                    UserProfileId = 4
                 },
                 new Reaction
                 {
                     Id = 5,
                     Image = "https://via.placeholder.com/150",
-                    Name = "Reaction 5",
-                    PostId = 5,
-                    UserProfileId = 5
+                    Name = "Reaction 5"
                 },
             });
 
