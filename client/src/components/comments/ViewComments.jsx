@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
 import { getCommentsByPostId } from "../../managers/commentManager";
-import { Card, CardBody, CardSubtitle, CardText, CardTitle } from "reactstrap";
+import { Card, CardBody, CardSubtitle, CardText, CardTitle, Button } from "reactstrap";
 import { useParams } from "react-router-dom";
+import { deleteComment } from "../../managers/commentManager";
 
 const ViewComments = () => {
     const [comments, setComments] = useState([]);
@@ -19,6 +20,18 @@ const ViewComments = () => {
 
         fetchData();
     }, [id]);
+
+    const handleDelete = async (commentId) => {
+        if (window.confirm("Are you sure you want to delete this comment?")) {
+            try {
+                await deleteComment(commentId);
+                setComments(comments.filter(comment => comment.id !== commentId));
+            } catch (error) {
+                console.error("Error deleting comment:", error);
+            }
+        }
+    };
+
 
     return (
         <>
@@ -40,6 +53,7 @@ const ViewComments = () => {
                                         Commented on: {new Date(comment.dateOfComment).toLocaleDateString()}
                                     </small>
                                 </CardText>
+                                <Button color="danger" onClick={() => handleDelete(comment.id)}>Delete</Button>
                             </CardBody>
                         </Card>
                     ))}
