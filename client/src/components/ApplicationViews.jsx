@@ -17,6 +17,7 @@ import ViewComments from "./comments/ViewComments";
 import CreatePost from "./posts/CreatePost.jsx";
 import { ReactionList } from "./reactions/ReactionList.jsx";
 import { CreateReactionForm } from "./reactions/CreateReactionForm.jsx";
+import UserProfileEdit from "./userprofiles/UserProileEdit.jsx";
 
 export default function ApplicationViews({ loggedInUser, setLoggedInUser }) {
   return (
@@ -44,6 +45,14 @@ export default function ApplicationViews({ loggedInUser, setLoggedInUser }) {
             element={
               <AuthorizedRoute loggedInUser={loggedInUser} roles={["Admin"]}>
                 <UserProfileDetails />
+              </AuthorizedRoute>
+            }
+          />
+          <Route
+            path=":id/edit"
+            element={
+              <AuthorizedRoute loggedInUser={loggedInUser} roles={["Admin"]}>
+                <UserProfileEdit />
               </AuthorizedRoute>
             }
           />
