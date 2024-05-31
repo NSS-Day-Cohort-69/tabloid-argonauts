@@ -4,7 +4,7 @@ import { Card, CardBody, CardSubtitle, CardText, CardTitle, Button } from "react
 import { useParams } from "react-router-dom";
 import { deleteComment } from "../../managers/commentManager";
 
-const ViewComments = () => {
+const ViewComments = ({loggedInUser}) => {
     const [comments, setComments] = useState([]);
     const { id } = useParams();
 
@@ -53,7 +53,9 @@ const ViewComments = () => {
                                         Commented on: {new Date(comment.dateOfComment).toLocaleDateString()}
                                     </small>
                                 </CardText>
-                                <Button color="danger" onClick={() => handleDelete(comment.id)}>Delete</Button>
+                                {comment.userProfile.id === loggedInUser.id && (
+                                    <Button color="danger" onClick={() => handleDelete(comment.id)}>Delete</Button>
+                                )}
                             </CardBody>
                         </Card>
                     ))}
