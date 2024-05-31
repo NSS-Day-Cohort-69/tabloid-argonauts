@@ -42,6 +42,19 @@ export const PostsList = () => {
     getAllCategories().then(setCategories);
   }, []);
 
+  // useEffect(() => {
+  //   setFilteredPosts(posts)
+  // }, [posts])
+
+  // useEffect(() => {
+  //   const foundPosts = posts.filter(post =>
+  //     post.postTags && post.postTags.some(pt =>
+  //       pt.tag.tagName && pt.tag.tagName.toLowerCase().includes(searchTerm.toLowerCase())
+  //     )
+  //   );
+  //   setFilteredPosts(foundPosts)
+  // }, [searchTerm])
+
   const handleSearchInputChange = (event) => {
     setSearchTerm(event.target.value);
   };
@@ -76,6 +89,7 @@ export const PostsList = () => {
           <Button type="submit">Search</Button>
         </Form>
       </div>
+
       <div className="search-controls">
         <Dropdown isOpen={dropdownOpen} toggle={toggle}>
           <DropdownToggle caret>Sort By Category</DropdownToggle>
@@ -99,6 +113,7 @@ export const PostsList = () => {
           Clear filters
         </Button>
       </div>
+
       {posts.map((p) => (
         <Card
           key={p.id}
