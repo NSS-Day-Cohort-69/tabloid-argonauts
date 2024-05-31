@@ -18,3 +18,12 @@ export const createComment = async (commentDTO) => {
         return data;
    
 };
+
+export const deleteComment = async (commentId) => {
+    const response = await fetch(`${_apiUrl}/${commentId}`, {
+        method: 'DELETE'
+    });
+    if (!response.ok) {
+        throw new Error('Failed to delete comment');
+    }
+};

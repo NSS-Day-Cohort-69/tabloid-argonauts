@@ -80,6 +80,7 @@ public class PostController : ControllerBase
         .Include(p => p.Tags)
         .Include(p => p.PostTags)
         .ThenInclude(pt => pt.Tag) 
+        .Include(p => p.PostReactions)
         .SingleOrDefault(p => p.Id == id);
 
         if (post == null)
@@ -155,6 +156,21 @@ public class PostController : ControllerBase
         return Ok();
     }
 
+    [HttpPost("postReaction")]
+    // [Authorize]
+
+    public IActionResult NewPostReaction(PostReaction postReaction)
+    {
+        PostReaction foundPostReaction = _dbContext.postReactions.SingleOrDefault(pr => pr == postReaction);
+        if(foundPostReaction == null)
+        {
+             _dbContext.postReactions.Add(postReaction);
+        }
+        _dbContext.SaveChanges();
+
+        return Created($"/api/post/postReaction", postReaction);
+    }
+
 
     [HttpDelete("{id}")]
     //[Authorize]
@@ -179,4 +195,11 @@ public class PostController : ControllerBase
         }
     }
 
+    [HttpGet("postReaction/{postId}")]
+    // [Authorize]
+
+    public IActionResult getReactionCount(int postId, int reactionId)
+    {
+        return Ok(_dbContext.postReactions.Count(pr => pr.PostId == postId && pr.ReactionId == reactionId));
+    }
 }
