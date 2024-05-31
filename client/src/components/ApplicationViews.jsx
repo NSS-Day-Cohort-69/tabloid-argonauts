@@ -17,6 +17,8 @@ import ViewComments from "./comments/ViewComments";
 import CreatePost from "./posts/CreatePost.jsx";
 import { ReactionList } from "./reactions/ReactionList.jsx";
 import { CreateReactionForm } from "./reactions/CreateReactionForm.jsx";
+import UserProfileEdit from "./userprofiles/UserProileEdit.jsx";
+import EditComment from "./comments/editCommentForm.jsx";
 
 export default function ApplicationViews({ loggedInUser, setLoggedInUser }) {
   return (
@@ -44,6 +46,14 @@ export default function ApplicationViews({ loggedInUser, setLoggedInUser }) {
             element={
               <AuthorizedRoute loggedInUser={loggedInUser} roles={["Admin"]}>
                 <UserProfileDetails />
+              </AuthorizedRoute>
+            }
+          />
+          <Route
+            path=":id/edit"
+            element={
+              <AuthorizedRoute loggedInUser={loggedInUser} roles={["Admin"]}>
+                <UserProfileEdit />
               </AuthorizedRoute>
             }
           />
@@ -88,14 +98,20 @@ export default function ApplicationViews({ loggedInUser, setLoggedInUser }) {
         </Route>
 
         <Route path="/posts">
-          <Route index element={<PostsList loggedInUser={loggedInUser} />} />
-          <Route
-            path=":id"
-            element={<PostDetails loggedInUser={loggedInUser} />}
-          />
-          <Route path=":id/comments" element={<ViewComments />} />
-          <Route path="create"  element={<CreatePost loggedInUser={loggedInUser} />} />
-        </Route>
+    <Route index element={<PostsList loggedInUser={loggedInUser} />} />
+    <Route path=":id">
+      <Route index element={<PostDetails loggedInUser={loggedInUser} />} />
+      <Route path="comments">
+        <Route index element={<ViewComments loggedInUser={loggedInUser} />} />
+        <Route path="edit/:commentId" element={<EditComment />} />
+      </Route>
+          
+          
+          <Route path="create" element={<CreatePost />} />
+          </Route>
+          </Route>
+          
+        
 
         <Route path="/reactions">
           <Route index element={<ReactionList />}></Route>
@@ -114,10 +130,13 @@ export default function ApplicationViews({ loggedInUser, setLoggedInUser }) {
       <Route path="/myposts">
         <Route index element={<MyPostList loggedInUser={loggedInUser} />} />
       </Route>
-      <Route path="/comments">
+      {/* <Route path="/comments">
         <Route index element={<ViewComments loggedInUser={loggedInUser} />} />
-      </Route>
+        <Route path=":postId/edit/:commentId" element={<EditComment />} />
+      </Route> */}
+
       <Route path="*" element={<p>Whoops, nothing here...</p>} />
+    
     </Routes>
   );
 }

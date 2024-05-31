@@ -15,3 +15,8 @@
 .reaction-count {
   display: inline;
 }
+
+.search-controls {
+  display: flex;
+  flex-direction: row;
+}
