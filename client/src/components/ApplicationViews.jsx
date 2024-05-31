@@ -94,7 +94,7 @@ export default function ApplicationViews({ loggedInUser, setLoggedInUser }) {
             element={<PostDetails loggedInUser={loggedInUser} />}
           />
           <Route path=":id/comments" element={<ViewComments />} />
-          <Route path="create" element={<CreatePost />} />
+          <Route path="create"  element={<CreatePost loggedInUser={loggedInUser} />} />
         </Route>
 
         <Route path="/reactions">

@@ -4,7 +4,7 @@ import { getAllCategories } from "../../managers/categoryManager.js";
 import { useNavigate } from "react-router-dom";
 import { createPost } from "../../managers/postManager.js";
 
-export default function CreatePost({ loggedInUser }) {
+const CreatePost = ({ loggedInUser }) => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [headerImage, setHeaderImage] = useState("");
@@ -13,17 +13,25 @@ export default function CreatePost({ loggedInUser }) {
 
   const navigate = useNavigate();
 
+  
   const handleSubmit = async (e) => {
+
     e.preventDefault();
     const newPost = {
     Title: title,
     Content : content,
     HeaderImage : headerImage,
-    CategoryId : category.id
+    CategoryId : category,
+    UserProfileId : loggedInUser.id,
+    IsApproved : false,
+    CreationDate : new Date()
     };
+
+    console.log("Creating new post with payload:", newPost);
+
     try {
-      await createPost(newPost);
-      navigate(`/posts/${newPost.id}`)
+      const createdPost = await createPost(newPost);
+      navigate(`/posts/${createdPost.id}`)
     }
     catch (error) {
       console.error("Error creating post:" , error)
@@ -88,3 +96,5 @@ export default function CreatePost({ loggedInUser }) {
     </>
   );
 }
+
+export default CreatePost;

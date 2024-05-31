@@ -28,7 +28,7 @@ public class PostController : ControllerBase
         .Include(p => p.UserProfile)
         .Include(p => p.Category)
         .Include(p => p.PostTags)
-        .ThenInclude(pt => pt.Tag) 
+        .ThenInclude(pt => pt.Tag)
         .Include(p => p.PostReactions)
         .Select(p => new Post
         {
@@ -74,7 +74,7 @@ public class PostController : ControllerBase
         .Include(p => p.UserProfile)
         .Include(p => p.Tags)
         .Include(p => p.PostTags)
-        .ThenInclude(pt => pt.Tag) 
+        .ThenInclude(pt => pt.Tag)
         .SingleOrDefault(p => p.Id == id);
 
         if (post == null)
@@ -93,29 +93,29 @@ public class PostController : ControllerBase
 
     [HttpPost]
     //[Authorize]
-    public IActionResult CreatePost(Post post)
+    public IActionResult CreatePost([FromBody] Post post)
     {
-        post.PublicationDate = DateTime.Now;
-        if (!CategoryExists(post.CategoryId))
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
+        if (!_dbContext.Categories.Any(c => c.Id == post.CategoryId))
         {
             return BadRequest("Invalid CategoryId. Category does not exist.");
         }
-        _dbContext.Posts.Add(post);
-        try 
-        {
-        _dbContext.SaveChanges();
-        }
-        catch (DbUpdateException ex)
-        {
-            Console.WriteLine(ex);
-            if (ex.InnerException != null)
-            {
-                Console.WriteLine(ex.InnerException.Message);
-            }
 
-            return StatusCode(500, "Internal server error");
+        if (!_dbContext.UserProfiles.Any(u => u.Id == post.UserProfileId))
+        {
+            return BadRequest("Invalid UserProfileId. User profile does not exist.");
         }
-        return Created($"/api/post/{post.Id}", post);
+
+        post.PublicationDate = DateTime.Now;
+        post.CreationDate = DateTime.Now;
+        _dbContext.Posts.Add(post);
+        _dbContext.SaveChanges();
+
+        return CreatedAtAction(nameof(GetPostById), new { id = post.Id }, post);
     }
 
     [HttpPost("{id}")]
@@ -123,9 +123,9 @@ public class PostController : ControllerBase
     public IActionResult NewPostTag(int id, List<int> tagIds)
     {
         List<PostTag> postTags = _dbContext.PostTags.ToList();
-        foreach(PostTag postTag in postTags)
+        foreach (PostTag postTag in postTags)
         {
-            if(postTag.PostId == id)
+            if (postTag.PostId == id)
             {
                 _dbContext.PostTags.Remove(postTag);
             }
@@ -133,16 +133,16 @@ public class PostController : ControllerBase
 
         _dbContext.SaveChanges();
 
-        foreach(int tagId in tagIds)
+        foreach (int tagId in tagIds)
         {
             PostTag postTagToAdd = new PostTag
             {
                 PostId = id,
                 TagId = tagId
             };
-          
-             _dbContext.PostTags.Add(postTagToAdd);
-  
+
+            _dbContext.PostTags.Add(postTagToAdd);
+
         }
 
         _dbContext.SaveChanges();
