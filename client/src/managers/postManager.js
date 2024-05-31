@@ -1,7 +1,15 @@
 const _apiUrl = "/api/post";
 
-export const getPosts = () => {
-  return fetch(_apiUrl).then((res) => res.json());
+export const getPosts = (search, categoryId) => {
+  let url = _apiUrl;
+  if (search && categoryId) {
+    url += `?search=${search}&categoryId=${categoryId}`;
+  } else if (search) {
+    url += `?search=${search}`;
+  } else if (categoryId) {
+    url += `?categoryId=${categoryId}`;
+  }
+  return fetch(url).then((res) => res.json());
 };
 
 export const getPostById = (id) => {
