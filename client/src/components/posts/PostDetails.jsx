@@ -3,6 +3,8 @@ import {
   createPostTag,
   getPostById,
   deletePost,
+  createPostReaction,
+  getReactionCount,
 } from "../../managers/postManager";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import {
@@ -38,6 +40,7 @@ export const PostDetails = ({ loggedInUser }) => {
   const [showConfirmation, setShowConfirmation] = useState();
   const [reactions, setReactions] = useState([]);
   const [postToDelete, setPostToDelete] = useState();
+  const [reactionCounts, setReactionCounts] = useState({});
   const navigate = useNavigate();
 
   const toggleCommentForm = () => {
@@ -104,6 +107,33 @@ export const PostDetails = ({ loggedInUser }) => {
     setShowConfirmation(false);
   };
 
+  const handlePostReaction = async (reactionId) => {
+    const postReaction = {
+      postId: parseInt(id),
+      userProfileId: parseInt(loggedInUser.id),
+      reactionId: parseInt(reactionId),
+    };
+
+    await createPostReaction(postReaction);
+
+    const updatedCount = await getReactionCount(id, reactionId);
+    setReactionCounts((prev) => ({
+      ...prev,
+      [reactionId]: updatedCount,
+    }));
+
+    console.log("clicked", reactionId);
+  };
+  useEffect(() => {
+    if (reactions.length > 0) {
+      reactions.forEach((reaction) => {
+        getReactionCount(id, reaction.id).then((count) =>
+          setReactionCounts((prev) => ({ ...prev, [reaction.id]: count }))
+        );
+      });
+    }
+  }, [reactions, id]);
+
   return (
     <>
       <Card
@@ -158,11 +188,20 @@ export const PostDetails = ({ loggedInUser }) => {
           {reactions.map((r) => (
             <div className="reaction-images">
               <img
+                key={r.id}
+                id={r.id}
                 src={r.image}
                 alt="reaction image"
                 className="reaction-image"
+                onClick={
+                  post?.userProfile?.id != loggedInUser.id
+                    ? () => {
+                        handlePostReaction(r.id);
+                      }
+                    : null
+                }
               />
-              <div className="reaction-count">1</div>
+              <div className="reaction-count">{reactionCounts[r.id]}</div>
             </div>
           ))}
         </CardBody>

@@ -48,3 +48,21 @@ export const deletePost = (postId) => {
     }
   });
 };
+
+export const createPostReaction = (postReaction) => {
+  return fetch(`${_apiUrl}/postReaction`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(postReaction),
+  }).then((res) => res.json);
+};
+
+export const getReactionCount = async (postId, reactionId) => {
+  const response = await fetch(
+    `${_apiUrl}/postReaction/${postId}?reactionId=${reactionId}`
+  );
+  const count = await response.json();
+  return count;
+};
