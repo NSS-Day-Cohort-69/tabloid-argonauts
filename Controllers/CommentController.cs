@@ -78,4 +78,22 @@ public class CommentController : ControllerBase
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
+
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> DeleteComment(int id)
+    {
+        var comment = await _dbContext.Comments.FindAsync(id);
+
+        if (comment == null)
+        {
+            return NotFound();
+        }
+
+        _dbContext.Comments.Remove(comment);
+        await _dbContext.SaveChangesAsync();
+
+        return NoContent();
+    }
+
+
 }
