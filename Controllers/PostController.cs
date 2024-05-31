@@ -96,6 +96,7 @@ public class PostController : ControllerBase
     {
         Post post = _dbContext.Posts
         .Include(p => p.UserProfile)
+        .ThenInclude(up => up.IdentityUser)
         .Include(p => p.Tags)
         .Include(p => p.PostTags)
         .ThenInclude(pt => pt.Tag) 

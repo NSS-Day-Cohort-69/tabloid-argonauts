@@ -146,7 +146,15 @@ export const PostDetails = ({ loggedInUser }) => {
         <CardBody>
           <CardTitle tag="h5">{post.title}</CardTitle>
           <CardSubtitle className="mb-2 text-muted" tag="h6">
-            {post.userProfile?.userName}
+            <Link
+              to={
+                post.userProfileId != loggedInUser.id
+                  ? `/posts/${post.userProfile?.id}/${post.userProfile?.identityUser?.userName}`
+                  : null
+              }
+            >
+              {post.userProfile?.identityUser?.userName}
+            </Link>
           </CardSubtitle>
           <CardSubtitle className="mb-2 text-muted" tag="h6">
             <Link to={`/posts/${post.id}/comments`}>View Comments</Link>
