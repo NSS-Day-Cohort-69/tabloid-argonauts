@@ -1,7 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using Tabloid.Models;
 using Microsoft.AspNetCore.Identity;
+using Tabloid.Models;
+
 
 namespace Tabloid.Data
 {
@@ -16,6 +17,8 @@ namespace Tabloid.Data
         public DbSet<Reaction> Reactions { get; set; }
         public DbSet<Tag> Tags { get; set; }
         public DbSet<Subscription> Subscriptions { get; set; }
+        public DbSet<PostTag> PostTags { get; set; }
+        public DbSet<PostReaction> postReactions { get; set; }
 
         public TabloidDbContext(DbContextOptions<TabloidDbContext> options, IConfiguration config) : base(options)
         {
@@ -25,6 +28,31 @@ namespace Tabloid.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<PostReaction>().HasKey(pr => new {pr.UserProfileId, pr.PostId, pr.ReactionId});
+            modelBuilder.Entity<PostTag>().HasKey(pt => new {pt.PostId, pt.TagId});
+
+            modelBuilder.Entity<PostReaction>()
+            .HasOne(pr => pr.Post)
+            .WithMany(p => p.PostReactions)
+            .HasForeignKey(pr => pr.PostId);
+            modelBuilder.Entity<PostReaction>()
+            .HasOne(pr => pr.Reaction)
+            .WithMany(r => r.PostReactions)
+            .HasForeignKey(pr => pr.ReactionId);
+            modelBuilder.Entity<PostReaction>()
+            .HasOne(pr => pr.UserProfile)
+            .WithMany(p => p.PostReactions)
+            .HasForeignKey(pr => pr.UserProfileId);
+
+            modelBuilder.Entity<PostTag>()
+            .HasOne(pt => pt.Post)
+            .WithMany(p => p.PostTags)
+            .HasForeignKey(pt => pt.PostId);
+            modelBuilder.Entity<PostTag>()
+            .HasOne(pt => pt.Tag)
+            .WithMany(t => t.PostTags)
+            .HasForeignKey(pt => pt.TagId);
 
             
             modelBuilder.Entity<IdentityRole>().HasData(new IdentityRole
@@ -297,41 +325,32 @@ namespace Tabloid.Data
                 {
                     Id = 1,
                     Image = "https://via.placeholder.com/150",
-                    Name = "Reaction 1",
-                    PostId = 1,
-                    UserProfileId = 1
+                    Name = "Reaction 1"
                 },
                 new Reaction
                 {
                     Id = 2,
                     Image = "https://via.placeholder.com/150",
                     Name = "Reaction 2",
-                    PostId = 2,
-                    UserProfileId = 2
+                
                 },
                 new Reaction
                 {
                     Id = 3,
                     Image = "https://via.placeholder.com/150",
-                    Name = "Reaction 3",
-                    PostId = 3,
-                    UserProfileId = 3
+                    Name = "Reaction 3"
                 },
                 new Reaction
                 {
                     Id = 4,
                     Image = "https://via.placeholder.com/150",
                     Name = "Reaction 4",
-                    PostId = 4,
-                    UserProfileId = 4
                 },
                 new Reaction
                 {
                     Id = 5,
                     Image = "https://via.placeholder.com/150",
-                    Name = "Reaction 5",
-                    PostId = 5,
-                    UserProfileId = 5
+                    Name = "Reaction 5"
                 },
             });
 

@@ -14,6 +14,10 @@ import { EditTagForm } from "./tags/EditTagForm";
 import { PostDetails } from "./posts/PostDetails";
 import MyPostList from "./posts/MyPostList";
 import ViewComments from "./comments/ViewComments";
+import CreatePost from "./posts/CreatePost.jsx";
+import { ReactionList } from "./reactions/ReactionList.jsx";
+import { CreateReactionForm } from "./reactions/CreateReactionForm.jsx";
+import UserProfileEdit from "./userprofiles/UserProileEdit.jsx";
 
 export default function ApplicationViews({ loggedInUser, setLoggedInUser }) {
   return (
@@ -44,6 +48,14 @@ export default function ApplicationViews({ loggedInUser, setLoggedInUser }) {
               </AuthorizedRoute>
             }
           />
+          <Route
+            path=":id/edit"
+            element={
+              <AuthorizedRoute loggedInUser={loggedInUser} roles={["Admin"]}>
+                <UserProfileEdit />
+              </AuthorizedRoute>
+            }
+          />
         </Route>
         <Route path="/tags">
           <Route
@@ -54,13 +66,8 @@ export default function ApplicationViews({ loggedInUser, setLoggedInUser }) {
               </AuthorizedRoute>
             }
           />
-          <Route 
-            path="create" 
-            element={<CreateTagForm />}
-          />
-          <Route path=":id"
-            element={<EditTagForm />}
-          />
+          <Route path="create" element={<CreateTagForm />} />
+          <Route path=":id" element={<EditTagForm />} />
         </Route>
         <Route path="/categories">
           <Route
@@ -90,9 +97,18 @@ export default function ApplicationViews({ loggedInUser, setLoggedInUser }) {
         </Route>
 
         <Route path="/posts">
-          <Route index element={<PostsList />} />
-          <Route path=":id" element={<PostDetails />} />
+          <Route index element={<PostsList loggedInUser={loggedInUser} />} />
+          <Route
+            path=":id"
+            element={<PostDetails loggedInUser={loggedInUser} />}
+          />
           <Route path=":id/comments" element={<ViewComments />} />
+          <Route path="create" element={<CreatePost />} />
+        </Route>
+
+        <Route path="/reactions">
+          <Route index element={<ReactionList />}></Route>
+          <Route path="create" element={<CreateReactionForm />} />
         </Route>
 
         <Route

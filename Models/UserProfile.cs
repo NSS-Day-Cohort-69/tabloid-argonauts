@@ -41,4 +41,6 @@ public class UserProfile
             return $"{FirstName} {LastName}";
         }
     }
+     public virtual List<PostReaction> PostReactions { get; set; }
+
 }

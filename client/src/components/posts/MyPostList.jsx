@@ -9,21 +9,21 @@ const MyPostList = ({ loggedInUser }) => {
     const [posts, setPosts] = useState([]);
     const [searchTerm, setSearchTerm] = useState("")
 
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const postsData = await getPosts();
-                const userPosts = postsData
-                    .filter(post => post.userProfileId === loggedInUser.id)
-                    .sort((a, b) => new Date(b.creationDate) - new Date(a.creationDate));
-                setPosts(userPosts);
-            } catch (error) {
-                console.error("Error fetching posts:", error);
-            }
-        };
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const postsData = await getPosts();
+        const userPosts = postsData
+          .filter((post) => post.userProfileId === loggedInUser.id)
+          .sort((a, b) => new Date(b.creationDate) - new Date(a.creationDate));
+        setPosts(userPosts);
+      } catch (error) {
+        console.error("Error fetching posts:", error);
+      }
+    };
 
-        fetchData();
-    }, [loggedInUser]);
+    fetchData();
+  }, [loggedInUser]);
 
     useEffect(() => {
         const foundPosts = posts.filter(eventObject => eventObject.description.toLowerCase().includes(searchTerm.toLowerCase()))
@@ -51,7 +51,7 @@ const MyPostList = ({ loggedInUser }) => {
                         <CardText>{p.category?.categoryName}</CardText>
                         <Button
                             onClick={() => {
-                                navigate(`/api/posts/${p.id}`);
+                                navigate(`/posts/${p.id}`);
                             }}
                         >
                             View Post

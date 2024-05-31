@@ -10,4 +10,5 @@ namespace Tabloid.Models.DTOs;
         public DateTime CreateDateTime { get; set; }
         public string ImageLocation { get; set; }
         public bool IsActivated { get; set; }
+        public virtual List<PostReactionDTO> PostReactions { get; set; }
     }
