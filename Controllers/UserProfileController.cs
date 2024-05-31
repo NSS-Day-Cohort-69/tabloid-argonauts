@@ -40,6 +40,7 @@ public class UserProfileController : ControllerBase
             Email = up.IdentityUser.Email,
             UserName = up.IdentityUser.UserName,
             IdentityUserId = up.IdentityUserId,
+            IsActive = up.IsActive,
             Roles = _dbContext.UserRoles
             .Where(ur => ur.UserId == up.IdentityUserId)
             .Select(ur => _dbContext.Roles.SingleOrDefault(r => r.Id == ur.RoleId).Name)
@@ -92,8 +93,13 @@ public class UserProfileController : ControllerBase
         {
             return NotFound();
         }
+
         user.Email = user.IdentityUser.Email;
         user.UserName = user.IdentityUser.UserName;
+        user.Roles = _dbContext.UserRoles
+       .Where(ur => ur.UserId == user.IdentityUserId)
+       .Select(ur => _dbContext.Roles.SingleOrDefault(r => r.Id == ur.RoleId).Name)
+       .ToList();
         return Ok(user);
     }
 
@@ -109,6 +115,7 @@ public class UserProfileController : ControllerBase
                 up.Id,
                 up.FirstName,
                 up.LastName,
+                up.IsActive,
                 Email = up.IdentityUser.Email,
                 UserName = up.IdentityUser.UserName,
                 up.IdentityUserId,
@@ -124,5 +131,22 @@ public class UserProfileController : ControllerBase
         }
 
         return Ok(user);
+    }
+
+    [HttpPut("{id}/toggle")]
+    [Authorize(Roles = "Admin")]
+    public IActionResult Toggle(int id)
+    {
+        UserProfile user = _dbContext.UserProfiles.SingleOrDefault(up => up.Id == id);
+
+        if (user == null)
+        {
+            return NotFound("User not found");
+        }
+
+        user.IsActive = !user.IsActive;
+        _dbContext.SaveChanges();
+
+        return NoContent();
     }
 }

@@ -11,4 +11,5 @@ namespace Tabloid.Models.DTOs;
         public string ImageLocation { get; set; }
         public bool IsActivated { get; set; }
         public virtual List<PostReactionDTO> PostReactions { get; set; }
+        public bool IsActive { get; set; }
     }

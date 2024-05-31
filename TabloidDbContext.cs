@@ -134,6 +134,7 @@ namespace Tabloid.Data
                     FirstName = "Admina",
                     LastName = "Strator",
                     ImageLocation = "https://robohash.org/numquamutut.png?size=150x150&set=set1",
+                    IsActive = true,
                     CreateDateTime = new DateTime(2022, 1, 25)
                 },
                 new UserProfile
@@ -143,6 +144,7 @@ namespace Tabloid.Data
                     LastName = "Doe",
                     CreateDateTime = new DateTime(2023, 2, 2),
                     ImageLocation = "https://robohash.org/nisiautemet.png?size=150x150&set=set1",
+                    IsActive = true,
                     IdentityUserId = "d8d76512-74f1-43bb-b1fd-87d3a8aa36df",
                 },
                 new UserProfile
@@ -152,6 +154,7 @@ namespace Tabloid.Data
                     LastName = "Smith",
                     CreateDateTime = new DateTime(2022, 3, 15),
                     ImageLocation = "https://robohash.org/molestiaemagnamet.png?size=150x150&set=set1",
+                    IsActive = true,
                     IdentityUserId = "a7d21fac-3b21-454a-a747-075f072d0cf3",
                 },
                 new UserProfile
@@ -161,6 +164,7 @@ namespace Tabloid.Data
                     LastName = "Johnson",
                     CreateDateTime = new DateTime(2023, 6, 10),
                     ImageLocation = "https://robohash.org/deseruntutipsum.png?size=150x150&set=set1",
+                    IsActive = true,
                     IdentityUserId = "c806cfae-bda9-47c5-8473-dd52fd056a9b",
                 },
                 new UserProfile
@@ -170,6 +174,7 @@ namespace Tabloid.Data
                     LastName = "Williams",
                     CreateDateTime = new DateTime(2023, 5, 15),
                     ImageLocation = "https://robohash.org/quiundedignissimos.png?size=150x150&set=set1",
+                    IsActive = true,
                     IdentityUserId = "9ce89d88-75da-4a80-9b0d-3fe58582b8e2",
                 },
                 new UserProfile
@@ -179,6 +184,7 @@ namespace Tabloid.Data
                     LastName = "Davis",
                     CreateDateTime = new DateTime(2022, 10, 18),
                     ImageLocation = "https://robohash.org/hicnihilipsa.png?size=150x150&set=set1",
+                    IsActive = true,
                     IdentityUserId = "d224a03d-bf0c-4a05-b728-e3521e45d74d",
                 }
             });
@@ -324,26 +330,26 @@ namespace Tabloid.Data
                 new Reaction
                 {
                     Id = 1,
-                    Image = "https://via.placeholder.com/150",
+                    Image = "https://cdn-icons-png.freepik.com/256/3702/3702712.png?semt=ais_hybrid",
                     Name = "Reaction 1"
                 },
                 new Reaction
                 {
                     Id = 2,
-                    Image = "https://via.placeholder.com/150",
+                    Image = "https://www.shareicon.net/data/256x256/2017/06/05/886712_facebook_512x512.png",
                     Name = "Reaction 2",
                 
                 },
                 new Reaction
                 {
                     Id = 3,
-                    Image = "https://via.placeholder.com/150",
+                    Image = "https://cdn.iconscout.com/icon/free/png-256/free-like-2387659-1991059.png",
                     Name = "Reaction 3"
                 },
                 new Reaction
                 {
                     Id = 4,
-                    Image = "https://via.placeholder.com/150",
+                    Image = "https://cdn.iconscout.com/icon/free/png-256/free-wow-2387663-1991062.png",
                     Name = "Reaction 4",
                 },
                 new Reaction

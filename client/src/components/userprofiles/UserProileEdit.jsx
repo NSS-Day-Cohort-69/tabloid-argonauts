@@ -1,11 +1,10 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { demoteUser, getProfile, getProfileWithRoles, promoteUser } from "../../managers/userProfileManager";
+import { demoteUser, getProfile, promoteUser } from "../../managers/userProfileManager";
 import { Button, Card, CardBody, CardTitle, FormGroup, Input, Label } from "reactstrap";
 
 export default function UserProfileEdit() {
   const [userProfile, setUserProfile] = useState();
-  const [profileRole, setProfileRole] = useState();
   const [pendingRoleChange, setPendingRoleChange] = useState(null);
   const [isAdmin, setIsAdmin] = useState(false);
 
@@ -13,10 +12,9 @@ export default function UserProfileEdit() {
   const { id } = useParams();
 
   useEffect(() => {
-    getProfile(id).then(setUserProfile);
-    getProfileWithRoles(id).then(data => {
-      setProfileRole(data);
-      setIsAdmin(data?.roles.includes("Admin"));
+    getProfile(id).then(data => {
+      setUserProfile(data);
+      setIsAdmin(data.roles.includes("Admin"));
     });
   }, [id]);
 
@@ -28,13 +26,13 @@ export default function UserProfileEdit() {
   const saveChanges = async () => {
     try {
       if (pendingRoleChange === "promote") {
-        await promoteUser(profileRole.identityUserId);
+        await promoteUser(userProfile.identityUserId);
       } else if (pendingRoleChange === "demote") {
-        await demoteUser(profileRole.identityUserId);
+        await demoteUser(userProfile.identityUserId);
       }
       
-      const updatedProfile = await getProfileWithRoles(id);
-      setProfileRole(updatedProfile);
+      const updatedProfile = await getProfile(id);
+      setUserProfile(updatedProfile);
   
       navigate('/userprofiles');
     } catch (error) {
