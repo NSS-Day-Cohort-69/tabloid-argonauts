@@ -19,6 +19,7 @@ import { ReactionList } from "./reactions/ReactionList.jsx";
 import { CreateReactionForm } from "./reactions/CreateReactionForm.jsx";
 import UserProfileEdit from "./userprofiles/UserProileEdit.jsx";
 import EditComment from "./comments/editCommentForm.jsx";
+import { UserPosts } from "./posts/UserPosts.jsx";
 
 export default function ApplicationViews({ loggedInUser, setLoggedInUser }) {
   return (
@@ -98,20 +99,28 @@ export default function ApplicationViews({ loggedInUser, setLoggedInUser }) {
         </Route>
 
         <Route path="/posts">
-    <Route index element={<PostsList loggedInUser={loggedInUser} />} />
-    <Route path=":id">
-      <Route index element={<PostDetails loggedInUser={loggedInUser} />} />
-      <Route path="comments">
-        <Route index element={<ViewComments loggedInUser={loggedInUser} />} />
-        <Route path="edit/:commentId" element={<EditComment />} />
-      </Route>
-          
-          
-          <Route path="create" element={<CreatePost />} />
+          <Route index element={<PostsList loggedInUser={loggedInUser} />} />
+          <Route path=":id">
+            <Route
+              index
+              element={<PostDetails loggedInUser={loggedInUser} />}
+            />
+            <Route path="comments">
+              <Route
+                index
+                element={<ViewComments loggedInUser={loggedInUser} />}
+              />
+              <Route path="edit/:commentId" element={<EditComment />} />
+            </Route>
+
+            <Route path="create" element={<CreatePost />} />
           </Route>
-          </Route>
-          
-        
+        </Route>
+
+        <Route
+          path="/posts/:userId/:userName"
+          element={<UserPosts loggedInUser={loggedInUser} />}
+        />
 
         <Route path="/reactions">
           <Route index element={<ReactionList />}></Route>
@@ -136,7 +145,6 @@ export default function ApplicationViews({ loggedInUser, setLoggedInUser }) {
       </Route> */}
 
       <Route path="*" element={<p>Whoops, nothing here...</p>} />
-    
     </Routes>
   );
 }
