@@ -31,6 +31,7 @@ public class UserProfile
     public List<string> Roles { get; set; }
 
     public string IdentityUserId { get; set; }
+    public bool IsActive { get; set; }
 
     public IdentityUser IdentityUser { get; set; }
 

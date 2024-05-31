@@ -23,3 +23,9 @@ export const demoteUser = (userId) => {
     method: "POST",
   });
 };
+
+export const toggleUserActiveStatus = (userId) => {
+  return fetch(`${_apiUrl}/${userId}/toggle`, {
+    method: "PUT",
+  });
+};

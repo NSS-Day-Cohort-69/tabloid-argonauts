@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
-import { getProfiles,  } from "../../managers/userProfileManager";
+import { getProfiles, toggleUserActiveStatus, } from "../../managers/userProfileManager";
 import { Link } from "react-router-dom";
 import { Button, Table } from "reactstrap";
 
 export default function UserProfileList() {
   const [userprofiles, setUserProfiles] = useState([]);
+  const [viewDeactivated, setViewDeactivated] = useState(false);
 
   const getUserProfiles = () => {
     getProfiles().then(setUserProfiles);
@@ -13,27 +14,55 @@ export default function UserProfileList() {
     getUserProfiles();
   }, []);
 
+  const toggleActiveStatus = (id) => {
+    if (window.confirm("Are you sure you want to change the active status of this user?")) {
+      toggleUserActiveStatus(id).then(() => {
+        getUserProfiles();
+      });
+    }
+  };
+
+  const toggleView = () => {
+    setViewDeactivated(!viewDeactivated);
+  };
+
   return (
     <>
       <h2>User Profile List</h2>
+      <Button onClick={toggleView}>
+        {viewDeactivated ? "View Active" : "View Deactivated"}
+      </Button>
       <Table>
         <thead><tr>
           <th>First Name</th>
           <th>Last Name</th>
           <th>Username</th>
           <th>Information</th>
-          <th>Actions</th>
+          <th>Status Action</th>
+          <th>Admin Action</th>
         </tr>
         </thead>
         <tbody>
-          {userprofiles.map((p) => (
+          {userprofiles.filter(p => p.isActive === !viewDeactivated).map((p) => (
             <tr key={p.id}>
               <th scope="row">{`${p.firstName}`}</th>
               <td>{p.lastName}</td>
               <td>{p.userName}</td>
               <td><Link to={`/userprofiles/${p.id}`}>Details</Link></td>
               <td>
-              {p.roles.includes("Admin") ? (
+                {p.isActive ? (
+                  <Button color="danger"
+                    onClick={() => {
+                      toggleActiveStatus(p.id);
+                    }}>Deactivate</Button>
+                ) : (<Button color="success"
+                  onClick={() => {
+                    toggleActiveStatus(p.id);
+                  }}>Reactivate</Button>)
+                }
+              </td>
+              <td>
+                {p.roles.includes("Admin") ? (
                   <Button color="danger">
                     <Link to={`/userprofiles/${p.id}/edit`} style={{ color: 'white', textDecoration: 'none' }}>
                       Demote
