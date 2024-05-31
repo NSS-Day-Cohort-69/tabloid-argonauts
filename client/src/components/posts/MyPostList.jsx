@@ -1,13 +1,13 @@
 import { useState, useEffect } from "react";
 import { getPosts } from "../../managers/postManager";
 import { Button, Card, CardBody, CardSubtitle, CardText, CardTitle } from "reactstrap";
-import { SearchBar } from "../tags/SearchBar";
+import { useNavigate } from "react-router-dom";
 
 
 
 const MyPostList = ({ loggedInUser }) => {
-    const [posts, setPosts] = useState([]);
-    const [searchTerm, setSearchTerm] = useState("")
+  const [posts, setPosts] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -25,16 +25,8 @@ const MyPostList = ({ loggedInUser }) => {
     fetchData();
   }, [loggedInUser]);
 
-    useEffect(() => {
-        const foundPosts = posts.filter(eventObject => eventObject.description.toLowerCase().includes(searchTerm.toLowerCase()))
-        setPosts(foundPosts)
-    }, [searchTerm, posts])
-
     return (
         <div className="container">
-            <SearchBar
-                setSearchTerm={setSearchTerm}
-            />
             <h1>Posts List</h1>
             {posts.map((p) => (
                 <Card

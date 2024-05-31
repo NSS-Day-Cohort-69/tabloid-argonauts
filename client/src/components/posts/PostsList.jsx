@@ -15,6 +15,7 @@ import { SearchBar } from "../tags/SearchBar";
 
 export const PostsList = () => {
   const [posts, setPosts] = useState([]);
+  const [filteredPosts, setFilteredPosts] = useState([]);
   const [searchTerm, setSearchTerm] = useState("")
   const navigate = useNavigate();
 
@@ -23,8 +24,16 @@ export const PostsList = () => {
   }, []);
 
   useEffect(() => {
-    const foundPosts = posts.filter(post => post.content.toLowerCase().includes(searchTerm.toLowerCase()))
-    setPosts(foundPosts)
+    setFilteredPosts(posts)
+  }, [posts])
+
+  useEffect(() => {
+    const foundPosts = posts.filter(post => 
+      post.postTags && post.postTags.some(pt => 
+        pt.tag.tagName && pt.tag.tagName.toLowerCase().includes(searchTerm.toLowerCase())
+      )
+    );
+    setFilteredPosts(foundPosts)
   }, [searchTerm])
 
   return (
@@ -33,7 +42,7 @@ export const PostsList = () => {
         setSearchTerm={setSearchTerm}
       />
       <h1>Posts List</h1>
-      {posts.map((p) => (
+      {filteredPosts.map((p) => (
         <Card
           key={p.id}
           style={{
