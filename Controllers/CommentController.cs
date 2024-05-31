@@ -95,5 +95,23 @@ public class CommentController : ControllerBase
         return NoContent();
     }
 
+    [HttpPut("edit/{id}")]
+    public async Task<IActionResult> UpdateComment(int id, [FromBody] CommentDTO commentDTO)
+    {
+        var comment = await _dbContext.Comments.FindAsync(id);
+
+        if (comment == null)
+        {
+            return NotFound();
+        }
+
+        comment.Subject = commentDTO.Subject;
+        comment.Content = commentDTO.Content;
+
+        await _dbContext.SaveChangesAsync();
+
+        return NoContent();
+    }
+
 
 }
