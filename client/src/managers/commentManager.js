@@ -1,4 +1,4 @@
-const _apiUrl = "/api/comment";
+const _apiUrl = "/api/Comment";
 
 export const getCommentsByPostId = (postId) => {
     return fetch(`${_apiUrl}?postId=${postId}`)
@@ -25,5 +25,22 @@ export const deleteComment = async (commentId) => {
     });
     if (!response.ok) {
         throw new Error('Failed to delete comment');
+    }
+};
+
+export const updateComment = async (commentId, commentData) => {
+    try {
+        const response = await fetch(`${_apiUrl}/edit/${commentId}`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(commentData),
+        });
+        if (!response.ok) {
+            throw new Error("Failed to update comment");
+        }
+    } catch (error) {
+        throw new Error(`Error updating comment: ${error.message}`);
     }
 };
