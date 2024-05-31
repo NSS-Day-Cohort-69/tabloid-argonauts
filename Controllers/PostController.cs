@@ -57,7 +57,12 @@ public class PostController : ControllerBase
             PostTags = p.PostTags.Select(pt => new PostTag
             {
                 PostId = pt.PostId,
-                TagId = pt.TagId
+                TagId = pt.TagId,
+                Tag = new Tag
+                {
+                    Id = pt.Tag.Id,
+                    TagName = pt.Tag.TagName
+                },
             }).ToList()
         })
         .Where(p => p.IsApproved == true && p.PublicationDate < DateTime.Now)
