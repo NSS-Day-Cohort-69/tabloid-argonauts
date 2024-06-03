@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { demoteUser, getProfile, promoteUser } from "../../managers/userProfileManager";
+import { demoteUser, getProfile, getProfiles, promoteUser } from "../../managers/userProfileManager";
 import { Button, Card, CardBody, CardTitle, FormGroup, Input, Label } from "reactstrap";
 
 export default function UserProfileEdit() {
@@ -28,8 +28,14 @@ export default function UserProfileEdit() {
       if (pendingRoleChange === "promote") {
         await promoteUser(userProfile.identityUserId);
       } else if (pendingRoleChange === "demote") {
+        const allProfiles = await getProfiles();
+        const adminCount = allProfiles.filter(user => user.roles.includes("Admin")).length;
+        if (adminCount > 1) {
         await demoteUser(userProfile.identityUserId);
+      } else {
+        throw new Error("Cannot demote the only remaining admin")
       }
+    }
       
       const updatedProfile = await getProfile(id);
       setUserProfile(updatedProfile);
@@ -37,6 +43,7 @@ export default function UserProfileEdit() {
       navigate('/userprofiles');
     } catch (error) {
       console.error("Error saving changes:", error);
+      alert(error.message);
     }
   };
 
