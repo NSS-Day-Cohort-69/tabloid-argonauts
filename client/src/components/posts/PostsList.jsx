@@ -69,6 +69,14 @@ export const PostsList = () => {
     setCategorySearch(selectedCategoryId);
     getPosts("", parseInt(selectedCategoryId)).then(setPosts);
   };
+
+  const calculateReadTime = (wordCount) => {
+    const wordsPerMinute = 265;
+    const minutes = Math.ceil(wordCount / wordsPerMinute);
+    return minutes === 1 ? "1 minute" : `${minutes} minutes`;
+  };
+
+
   return (
     <>
       <div>
@@ -127,6 +135,9 @@ export const PostsList = () => {
               {p.userProfile?.fullName}
             </CardSubtitle>
             <CardText>{p.category?.categoryName}</CardText>
+            <CardText>
+              Read Time: {calculateReadTime(p.content.split(/\s+/).length)}
+            </CardText>
             <Button
               onClick={() => {
                 navigate(`/posts/${p.id}`);
