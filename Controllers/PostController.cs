@@ -118,7 +118,7 @@ public class PostController : ControllerBase
 
 
     [HttpPost]
-    //[Authorize]
+   
     public IActionResult CreatePost([FromBody] Post post)
     {
         if (!ModelState.IsValid)
@@ -134,6 +134,13 @@ public class PostController : ControllerBase
         if (!_dbContext.UserProfiles.Any(u => u.Id == post.UserProfileId))
         {
             return BadRequest("Invalid UserProfileId. User profile does not exist.");
+        }
+
+        bool isAdmin = User.IsInRole("Admin");
+
+        if (!isAdmin)
+        {
+            post.IsApproved = false;
         }
 
         post.PublicationDate = DateTime.Now;
@@ -222,6 +229,59 @@ public class PostController : ControllerBase
     {
         return Ok(_dbContext.postReactions.Count(pr => pr.PostId == postId && pr.ReactionId == reactionId));
     }
+
+
+    [HttpGet("pending")]
+// [Authorize(Roles = "Admin")]
+public IActionResult GetPendingPosts()
+{
+    var pendingPosts = _dbContext.Posts
+        .Include(p => p.UserProfile)
+        .Include(p => p.Category)
+        .Include(p => p.PostTags)
+        .ThenInclude(pt => pt.Tag)
+        .Include(p => p.PostReactions)
+        .Where(p => !p.IsApproved)
+        .OrderByDescending(p => p.PublicationDate)
+        .ToList();
+
+    return Ok(pendingPosts);
+}
+
+[HttpPut("{id}/approve")]
+// [Authorize(Roles = "Admin")]
+public IActionResult ApprovePost(int id)
+{
+    var post = _dbContext.Posts.Find(id);
+    if (post == null)
+    {
+        return NotFound();
+    }
+
+    post.IsApproved = true;
+    _dbContext.SaveChanges();
+
+    return Ok(post);
+}
+
+[HttpPut("{id}/reject")]
+// [Authorize(Roles = "Admin")]
+public IActionResult RejectPost(int id)
+{
+    var post = _dbContext.Posts.Find(id);
+    if (post == null)
+    {
+        return NotFound();
+    }
+
+    post.IsApproved = false;
+    _dbContext.SaveChanges();
+
+    return Ok(post);
+}
+
+
+
 
     [HttpPut("{postId}/edit")]
     // [Authorize]
