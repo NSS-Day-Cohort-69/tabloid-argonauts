@@ -194,7 +194,7 @@ export const PostDetails = ({ loggedInUser }) => {
           )}
 
           {reactions.map((r) => (
-            <div className="reaction-images">
+            <div className="reaction-images" key={r.id}>
               <img
                 key={r.id}
                 id={r.id}
