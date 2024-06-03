@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { getPosts } from "../../managers/postManager";
+import { getPosts, getPendingPosts} from "../../managers/postManager";
 import {
   Card,
   CardBody,
@@ -19,8 +19,11 @@ import {
 import { useNavigate } from "react-router-dom";
 import { getAllCategories } from "../../managers/categoryManager";
 import "./posts.css";
+import { approvePost } from "../../managers/postManager";
+import { rejectPost } from "../../managers/postManager";
 
-export const PostsList = () => {
+
+export const PostsList = ({loggedInUser}) => {
   const [posts, setPosts] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [categories, setCategories] = useState([]);
@@ -76,11 +79,46 @@ export const PostsList = () => {
     return minutes === 1 ? "1 minute" : `${minutes} minutes`;
   };
 
+ 
+  
+  const isAdmin =
+    loggedInUser && loggedInUser.roles && loggedInUser.roles.includes("Admin");
+
+    
+    const handlePendingPostsClick = () => {
+      if (isAdmin) {
+        getPendingPosts().then((pendingPosts) => {
+          setPosts(pendingPosts);
+        });
+      }
+    };
+
+    const handleApproveClick = (postId) => {
+      approvePost(postId)
+        .then(() => {
+          getPendingPosts()
+            .then((pendingPosts) => {
+              setPosts(pendingPosts);
+            });
+        });
+    };
+
+    const handleRejectClick = (postId) => {
+      rejectPost(postId)
+        .then(() => {
+          getPosts()
+          .then((updatedPosts) => {
+            setPosts(updatedPosts);
+          });
+        });
+    };
+    
+
 
   return (
     <>
       <div>
-        <Form inline onSubmit={handleSearchSubmit}>
+        <Form inline="true" onSubmit={handleSearchSubmit}>
           <FormGroup>
             <Label for="search" hidden>
               Search
@@ -120,6 +158,9 @@ export const PostsList = () => {
         >
           Clear filters
         </Button>
+        {isAdmin && (
+          <Button onClick={handlePendingPostsClick}>Pending Posts</Button>
+        )}
       </div>
 
       {posts.map((p) => (
@@ -145,6 +186,12 @@ export const PostsList = () => {
             >
               View Post
             </Button>
+            {isAdmin && p.isApproved == false && (
+              <Button onClick={() => handleApproveClick(p.id)}>Approve</Button>
+            )}
+             {isAdmin && p.isApproved == true && (
+              <Button onClick={() => handleRejectClick(p.id)}>Remove</Button>
+            )}
           </CardBody>
         </Card>
       ))}
