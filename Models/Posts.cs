@@ -21,4 +21,13 @@ public class Post
         public virtual List<PostReaction> PostReactions { get; set; }
         public virtual List<PostTag> PostTags { get; set; }
         public virtual List<Tag> Tags { get; set; }
+         public double ReadTimeInMinutes
+        {
+            get
+            {
+                const int wordsPerMinute = 265;
+                int wordCount = Content.Split(new char[] { ' ', '.', ',', '?', '!', '-' }, StringSplitOptions.RemoveEmptyEntries).Length;
+                return (double)wordCount / wordsPerMinute;
+            }
+        }
     }
