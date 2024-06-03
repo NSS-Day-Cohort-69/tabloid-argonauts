@@ -87,3 +87,15 @@ export const getReactionCount = async (postId, reactionId) => {
   const count = await response.json();
   return count;
 };
+
+export const editPost = (postId, object) => {
+  return fetch(`${_apiUrl}/${postId}/edit`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json"},
+      body: JSON.stringify(object)
+  }).then((response) => {
+    if (!response.ok) {
+      throw new Error("Failed to edit post");
+    }
+  });
+}
