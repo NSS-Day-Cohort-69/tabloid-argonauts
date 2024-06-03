@@ -100,6 +100,7 @@ export default function ApplicationViews({ loggedInUser, setLoggedInUser }) {
 
         <Route path="/posts">
           <Route index element={<PostsList loggedInUser={loggedInUser} />} />
+          <Route path="create" element={<CreatePost loggedInUser={loggedInUser}/>} />
           <Route path=":id">
             <Route
               index
@@ -113,7 +114,7 @@ export default function ApplicationViews({ loggedInUser, setLoggedInUser }) {
               <Route path="edit/:commentId" element={<EditComment />} />
             </Route>
 
-            <Route path="create" element={<CreatePost />} />
+            
           </Route>
         </Route>
 
