@@ -1,7 +1,10 @@
 const _apiUrl = "/api/post";
 
-export const getPosts = (search, categoryId) => {
+export const getPosts = (search, categoryId, pending) => {
   let url = _apiUrl;
+  if (pending == true) {
+    url += "/pending";
+  }
   if (search && categoryId) {
     url += `?search=${search}&categoryId=${categoryId}`;
   } else if (search) {
@@ -10,6 +13,10 @@ export const getPosts = (search, categoryId) => {
     url += `?categoryId=${categoryId}`;
   }
   return fetch(url).then((res) => res.json());
+};
+
+export const getPendingPosts = () => {
+  return fetch(`${_apiUrl}/pending`).then((res) => res.json());
 };
 
 export const getPostById = (id) => {
@@ -86,4 +93,24 @@ export const getReactionCount = async (postId, reactionId) => {
   );
   const count = await response.json();
   return count;
+};
+
+
+
+export const approvePost = async (postId) => {
+  return fetch(`${_apiUrl}/${postId}/approve`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  }).then((res) => res.json());
+};
+
+export const rejectPost = async (postId) => {
+  return fetch(`${_apiUrl}/${postId}/reject`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  }).then((res) => res.json());
 };
