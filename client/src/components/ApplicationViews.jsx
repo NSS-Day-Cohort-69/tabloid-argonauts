@@ -113,7 +113,7 @@ export default function ApplicationViews({ loggedInUser, setLoggedInUser }) {
               <Route path="edit/:commentId" element={<EditComment />} />
             </Route>
 
-            <Route path="create" element={<CreatePost />} />
+            <Route path="create" element={<CreatePost loggedInUser={loggedInUser} />} />
           </Route>
         </Route>
 
