@@ -199,6 +199,7 @@ export const PostDetails = ({ loggedInUser }) => {
             <>
               <div className="post-btns">
                 <Button onClick={toggle}>Manage Tags</Button>
+                <Button onClick={() => navigate(`/myposts/edit/${post.id}`)}>Edit Post</Button>
                 <Button
                   onClick={() => {
                     setPostToDelete(post.id);

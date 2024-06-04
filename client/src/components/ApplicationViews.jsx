@@ -21,6 +21,7 @@ import UserProfileEdit from "./userprofiles/UserProileEdit.jsx";
 import EditComment from "./comments/editCommentForm.jsx";
 import { UserPosts } from "./posts/UserPosts.jsx";
 import { SubscribedPosts } from "./posts/SubscribedPosts.jsx";
+import EditPost from "./posts/EditPost.jsx";
 
 export default function ApplicationViews({ loggedInUser, setLoggedInUser }) {
   return (
@@ -141,6 +142,14 @@ export default function ApplicationViews({ loggedInUser, setLoggedInUser }) {
       </Route>
       <Route path="/myposts">
         <Route index element={<MyPostList loggedInUser={loggedInUser} />} />
+        <Route
+          path="edit/:postId"
+          element={
+            <AuthorizedRoute loggedInUser={loggedInUser} roles={["Admin"]}>
+              <EditPost />
+            </AuthorizedRoute>
+          }
+        />
       </Route>
       {/* <Route path="/comments">
         <Route index element={<ViewComments loggedInUser={loggedInUser} />} />
