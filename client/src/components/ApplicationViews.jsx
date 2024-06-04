@@ -21,6 +21,8 @@ import UserProfileEdit from "./userprofiles/UserProileEdit.jsx";
 import EditComment from "./comments/editCommentForm.jsx";
 import { UserPosts } from "./posts/UserPosts.jsx";
 import AdminApproval from "./userprofiles/AdminApproval.jsx";
+import { SubscribedPosts } from "./posts/SubscribedPosts.jsx";
+import EditPost from "./posts/EditPost.jsx";
 
 export default function ApplicationViews({ loggedInUser, setLoggedInUser }) {
   return (
@@ -30,7 +32,7 @@ export default function ApplicationViews({ loggedInUser, setLoggedInUser }) {
           index
           element={
             <AuthorizedRoute loggedInUser={loggedInUser}>
-              <p>Welcome to Tabloid!</p>
+              <SubscribedPosts />
             </AuthorizedRoute>
           }
         />
@@ -55,7 +57,7 @@ export default function ApplicationViews({ loggedInUser, setLoggedInUser }) {
             path=":id/edit"
             element={
               <AuthorizedRoute loggedInUser={loggedInUser} roles={["Admin"]}>
-                <UserProfileEdit loggedInUser={loggedInUser}/>
+                <UserProfileEdit loggedInUser={loggedInUser} />
               </AuthorizedRoute>
             }
           />
@@ -63,7 +65,7 @@ export default function ApplicationViews({ loggedInUser, setLoggedInUser }) {
             path="pending"
             element={
               <AuthorizedRoute loggedInUser={loggedInUser} roles={["Admin"]}>
-                <AdminApproval loggedInUser={loggedInUser}/>
+                <AdminApproval loggedInUser={loggedInUser} />
               </AuthorizedRoute>
             }
           />
@@ -109,7 +111,10 @@ export default function ApplicationViews({ loggedInUser, setLoggedInUser }) {
 
         <Route path="/posts">
           <Route index element={<PostsList loggedInUser={loggedInUser} />} />
-          <Route path="create" element={<CreatePost loggedInUser={loggedInUser} />} />
+          <Route
+            path="create"
+            element={<CreatePost loggedInUser={loggedInUser} />}
+          />
           <Route path=":id">
             <Route
               index
@@ -122,8 +127,6 @@ export default function ApplicationViews({ loggedInUser, setLoggedInUser }) {
               />
               <Route path="edit/:commentId" element={<EditComment />} />
             </Route>
-
-
           </Route>
         </Route>
 
@@ -148,6 +151,14 @@ export default function ApplicationViews({ loggedInUser, setLoggedInUser }) {
       </Route>
       <Route path="/myposts">
         <Route index element={<MyPostList loggedInUser={loggedInUser} />} />
+        <Route
+          path="edit/:postId"
+          element={
+            <AuthorizedRoute loggedInUser={loggedInUser} roles={["Admin"]}>
+              <EditPost />
+            </AuthorizedRoute>
+          }
+        />
       </Route>
       {/* <Route path="/comments">
         <Route index element={<ViewComments loggedInUser={loggedInUser} />} />

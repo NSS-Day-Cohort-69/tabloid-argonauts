@@ -28,6 +28,10 @@ import { GetAllTags } from "../../managers/TagManager";
 import CommentForm from "../comments/commentForm";
 import { GetReactions } from "../../managers/reactionManager";
 import "./posts.css";
+import {
+  NewSubscription,
+  getSubscriptions,
+} from "../../managers/subscriptionManager";
 
 export const PostDetails = ({ loggedInUser }) => {
   const [post, setPost] = useState({});
@@ -41,10 +45,13 @@ export const PostDetails = ({ loggedInUser }) => {
   const [reactions, setReactions] = useState([]);
   const [postToDelete, setPostToDelete] = useState();
   const [reactionCounts, setReactionCounts] = useState({});
+  const [subscriptions, setSubscriptions] = useState([]);
+  const [userSubscriptions, setUserSubscriptions] = useState(false);
   const navigate = useNavigate();
 
   const toggleCommentForm = () => {
     setShowCommentForm((prev) => !prev);
+    s;
   };
 
   useEffect(() => {
@@ -134,6 +141,34 @@ export const PostDetails = ({ loggedInUser }) => {
     }
   }, [reactions, id]);
 
+  const handleSubscribe = () => {
+    debugger;
+    const subscription = {
+      creatorId: post?.userProfile?.id,
+      followerId: loggedInUser.id,
+    };
+    NewSubscription(subscription).then(() => {
+      console.log("subscription success");
+    });
+  };
+
+  useEffect(() => {
+    getSubscriptions().then(setSubscriptions);
+  }, []);
+
+  useEffect(() => {
+    // debugger;
+    const userSubscriptions = post.userProfile?.subscribers.filter(
+      (s) => s.followerId == loggedInUser.id
+    );
+
+    if (userSubscriptions == null) {
+      setUserSubscriptions(false);
+    } else {
+      setUserSubscriptions(true);
+    }
+  }, [post]);
+
   return (
     <>
       <Card
@@ -164,6 +199,7 @@ export const PostDetails = ({ loggedInUser }) => {
             <>
               <div className="post-btns">
                 <Button onClick={toggle}>Manage Tags</Button>
+                <Button onClick={() => navigate(`/myposts/edit/${post.id}`)}>Edit Post</Button>
                 <Button
                   onClick={() => {
                     setPostToDelete(post.id);
@@ -191,6 +227,18 @@ export const PostDetails = ({ loggedInUser }) => {
                 <CommentForm postId={post.id} loggedInUser={loggedInUser} />
               )}
             </div>
+          )}
+          {userSubscriptions == false ? (
+            <Button
+              className="post-btns"
+              onClick={() => {
+                handleSubscribe();
+              }}
+            >
+              Subscribe
+            </Button>
+          ) : (
+            <Button>Unscubscribe</Button>
           )}
 
           {reactions.map((r) => (

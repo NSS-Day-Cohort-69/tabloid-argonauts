@@ -31,6 +31,7 @@ namespace Tabloid.Data
 
             modelBuilder.Entity<PostReaction>().HasKey(pr => new {pr.UserProfileId, pr.PostId, pr.ReactionId});
             modelBuilder.Entity<PostTag>().HasKey(pt => new {pt.PostId, pt.TagId});
+            modelBuilder.Entity<Subscription>().HasKey(s => new {s.CreatorId, s.FollowerId});
 
             modelBuilder.Entity<PostReaction>()
             .HasOne(pr => pr.Post)
@@ -53,6 +54,16 @@ namespace Tabloid.Data
             .HasOne(pt => pt.Tag)
             .WithMany(t => t.PostTags)
             .HasForeignKey(pt => pt.TagId);
+
+
+            modelBuilder.Entity<Subscription>()
+            .HasOne(s => s.Creator)
+            .WithMany(c => c.Subscribers)
+            .HasForeignKey(s => s.CreatorId);
+            modelBuilder.Entity<Subscription>()
+            .HasOne(s => s.Follower)
+            .WithMany(f => f.Subscriptions)
+            .HasForeignKey(s => s.FollowerId);
 
             
             modelBuilder.Entity<IdentityRole>().HasData(new IdentityRole
@@ -372,50 +383,6 @@ namespace Tabloid.Data
                 },
             });
 
-          
-            modelBuilder.Entity<Subscription>().HasData(new Subscription[]
-            {
-                new Subscription
-                {
-                    Id = 1,
-                    UserProfileId = 1,
-                    FollowedUserId = 2,
-                    StartDate = DateTime.Now,
-                    EndDate = DateTime.Now.AddDays(30)
-                },
-                new Subscription
-                {
-                    Id = 2,
-                    UserProfileId = 2,
-                    FollowedUserId = 3,
-                    StartDate = DateTime.Now,
-                    EndDate = DateTime.Now.AddDays(30)
-                },
-                new Subscription
-                {
-                    Id = 3,
-                    UserProfileId = 3,
-                    FollowedUserId = 4,
-                    StartDate = DateTime.Now,
-                    EndDate = DateTime.Now.AddDays(30)
-                },
-                new Subscription
-                {
-                    Id = 4,
-                    UserProfileId = 4,
-                    FollowedUserId = 5,
-                    StartDate = DateTime.Now,
-                    EndDate = DateTime.Now.AddDays(30)
-                },
-                new Subscription
-                {
-                    Id = 5,
-                    UserProfileId = 5,
-                    FollowedUserId = 1,
-                    StartDate = DateTime.Now,
-                    EndDate = DateTime.Now.AddDays(30)
-                },
-            });
         }
     }
 }

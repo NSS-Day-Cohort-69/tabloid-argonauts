@@ -4,15 +4,14 @@ namespace Tabloid.Models;
  
  public class Subscription
     {
-        public int Id { get; set; }
         [Required]
-        public int UserProfileId { get; set; }
+        public int CreatorId { get; set; }
        
         [Required]
-        public int FollowedUserId { get; set; }
+        public int FollowerId { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
 
-        public  UserProfile UserProfile { get; set; }
-        public UserProfile FollowedUser { get; set; }
+        public  UserProfile Creator { get; set; }
+        public UserProfile Follower { get; set; }
     }

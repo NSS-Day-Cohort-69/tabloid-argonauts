@@ -4,6 +4,7 @@ using Tabloid.Data;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
+using Tabloid.Models.DTOs;
 
 namespace Tabloid.Controllers;
 
@@ -53,6 +54,16 @@ public class PostController : ControllerBase
                 LastName = p.UserProfile.LastName,
                 CreateDateTime = p.UserProfile.CreateDateTime,
                 ImageLocation = p.UserProfile.ImageLocation,
+                Subscribers = p.UserProfile.Subscribers.Select(s => new Subscription
+                {
+                    CreatorId = s.CreatorId,
+                    FollowerId = s.FollowerId
+                }).ToList(),
+                Subscriptions = p.UserProfile.Subscriptions.Select(s => new Subscription
+                {
+                    CreatorId = s.CreatorId,
+                    FollowerId = s.FollowerId 
+                }).ToList()
             },
             IsApproved = p.IsApproved,
             PostTags = p.PostTags.Select(pt => new PostTag
@@ -69,19 +80,19 @@ public class PostController : ControllerBase
         .Where(p => p.IsApproved == true && p.PublicationDate < DateTime.Now)
         .OrderByDescending(p => p.PublicationDate).ToList();
 
-        if(search != null)
+        if (search != null)
         {
             posts = posts.Where(p => p.PostTags.Any(pt => pt.Tag.TagName.ToUpper().Contains(search.ToUpper()))).ToList();
         }
 
-        if(categoryId != null)
+        if (categoryId != null)
         {
             posts = posts.Where(p => p.CategoryId == categoryId).ToList();
         }
 
-        if(search != null & categoryId != null)
+        if (search != null & categoryId != null)
         {
-          posts = posts.Where(p => p.PostTags.Any(pt => pt.Tag.TagName.ToUpper().Contains(search.ToUpper())) && p.CategoryId == categoryId).ToList();
+            posts = posts.Where(p => p.PostTags.Any(pt => pt.Tag.TagName.ToUpper().Contains(search.ToUpper())) && p.CategoryId == categoryId).ToList();
 
         }
 
@@ -97,9 +108,13 @@ public class PostController : ControllerBase
         Post post = _dbContext.Posts
         .Include(p => p.UserProfile)
         .ThenInclude(up => up.IdentityUser)
+        .Include(p => p.UserProfile)
+        .ThenInclude(s => s.Subscriptions)
+        .Include(up => up.UserProfile)
+        .ThenInclude(s => s.Subscribers)
         .Include(p => p.Tags)
         .Include(p => p.PostTags)
-        .ThenInclude(pt => pt.Tag) 
+        .ThenInclude(pt => pt.Tag)
         .Include(p => p.PostReactions)
         .SingleOrDefault(p => p.Id == id);
 
@@ -189,9 +204,9 @@ public class PostController : ControllerBase
     public IActionResult NewPostReaction(PostReaction postReaction)
     {
         PostReaction foundPostReaction = _dbContext.postReactions.SingleOrDefault(pr => pr == postReaction);
-        if(foundPostReaction == null)
+        if (foundPostReaction == null)
         {
-             _dbContext.postReactions.Add(postReaction);
+            _dbContext.postReactions.Add(postReaction);
         }
         _dbContext.SaveChanges();
 
@@ -280,6 +295,61 @@ public IActionResult RejectPost(int id)
     return Ok(post);
 }
 
+    [HttpPut("{postId}/edit")]
+    // [Authorize]
+    public IActionResult UpdatePost(int postId, [FromBody] Post updatedPost)
+    {
+        try
+        {
+            var postToUpdate = _dbContext.Posts.Find(postId);
 
+            if (postToUpdate == null)
+            {
+                return NotFound();
+            }
+
+            postToUpdate.Title = updatedPost.Title;
+            postToUpdate.Content = updatedPost.Content;
+            postToUpdate.HeaderImage = updatedPost.HeaderImage;
+            postToUpdate.CategoryId = updatedPost.CategoryId;
+
+            _dbContext.SaveChanges();
+
+            return CreatedAtAction(nameof(GetPostById), new { id = postToUpdate.Id }, postToUpdate);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, $"Internal server error: {ex.Message}");
+        }
+    }
+
+
+    [HttpPut("{postId}/edit")]
+    // [Authorize]
+    public IActionResult UpdatePost(int postId, [FromBody] Post updatedPost)
+    {
+        try
+        {
+            var postToUpdate = _dbContext.Posts.Find(postId);
+
+            if (postToUpdate == null)
+            {
+                return NotFound();
+            }
+
+            postToUpdate.Title = updatedPost.Title;
+            postToUpdate.Content = updatedPost.Content;
+            postToUpdate.HeaderImage = updatedPost.HeaderImage;
+            postToUpdate.CategoryId = updatedPost.CategoryId;
+
+            _dbContext.SaveChanges();
+
+            return CreatedAtAction(nameof(GetPostById), new { id = postToUpdate.Id }, postToUpdate);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, $"Internal server error: {ex.Message}");
+        }
+    }
 
 }
