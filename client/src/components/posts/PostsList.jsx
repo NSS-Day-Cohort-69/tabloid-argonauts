@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { getPosts, getPendingPosts} from "../../managers/postManager";
+import { getPosts, getPendingPosts } from "../../managers/postManager";
 import {
   Card,
   CardBody,
@@ -22,8 +22,7 @@ import "./posts.css";
 import { approvePost } from "../../managers/postManager";
 import { rejectPost } from "../../managers/postManager";
 
-
-export const PostsList = ({loggedInUser}) => {
+export const PostsList = ({ loggedInUser }) => {
   const [posts, setPosts] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [categories, setCategories] = useState([]);
@@ -44,19 +43,6 @@ export const PostsList = ({loggedInUser}) => {
   useEffect(() => {
     getAllCategories().then(setCategories);
   }, []);
-
-  // useEffect(() => {
-  //   setFilteredPosts(posts)
-  // }, [posts])
-
-  // useEffect(() => {
-  //   const foundPosts = posts.filter(post =>
-  //     post.postTags && post.postTags.some(pt =>
-  //       pt.tag.tagName && pt.tag.tagName.toLowerCase().includes(searchTerm.toLowerCase())
-  //     )
-  //   );
-  //   setFilteredPosts(foundPosts)
-  // }, [searchTerm])
 
   const handleSearchInputChange = (event) => {
     setSearchTerm(event.target.value);
@@ -79,41 +65,32 @@ export const PostsList = ({loggedInUser}) => {
     return minutes === 1 ? "1 minute" : `${minutes} minutes`;
   };
 
- 
-  
   const isAdmin =
     loggedInUser && loggedInUser.roles && loggedInUser.roles.includes("Admin");
 
-    
-    const handlePendingPostsClick = () => {
-      if (isAdmin) {
-        getPendingPosts().then((pendingPosts) => {
-          setPosts(pendingPosts);
-        });
-      }
-    };
+  const handlePendingPostsClick = () => {
+    if (isAdmin) {
+      getPendingPosts().then((pendingPosts) => {
+        setPosts(pendingPosts);
+      });
+    }
+  };
 
-    const handleApproveClick = (postId) => {
-      approvePost(postId)
-        .then(() => {
-          getPendingPosts()
-            .then((pendingPosts) => {
-              setPosts(pendingPosts);
-            });
-        });
-    };
+  const handleApproveClick = (postId) => {
+    approvePost(postId).then(() => {
+      getPendingPosts().then((pendingPosts) => {
+        setPosts(pendingPosts);
+      });
+    });
+  };
 
-    const handleRejectClick = (postId) => {
-      rejectPost(postId)
-        .then(() => {
-          getPosts()
-          .then((updatedPosts) => {
-            setPosts(updatedPosts);
-          });
-        });
-    };
-    
-
+  const handleRejectClick = (postId) => {
+    rejectPost(postId).then(() => {
+      getPosts().then((updatedPosts) => {
+        setPosts(updatedPosts);
+      });
+    });
+  };
 
   return (
     <>
@@ -189,7 +166,7 @@ export const PostsList = ({loggedInUser}) => {
             {isAdmin && p.isApproved == false && (
               <Button onClick={() => handleApproveClick(p.id)}>Approve</Button>
             )}
-             {isAdmin && p.isApproved == true && (
+            {isAdmin && p.isApproved == true && (
               <Button onClick={() => handleRejectClick(p.id)}>Remove</Button>
             )}
           </CardBody>

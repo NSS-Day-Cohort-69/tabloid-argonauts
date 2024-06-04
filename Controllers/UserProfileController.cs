@@ -20,14 +20,14 @@ public class UserProfileController : ControllerBase
     }
 
     [HttpGet]
-    [Authorize]
+    // [Authorize]
     public IActionResult Get()
     {
         return Ok(_dbContext.UserProfiles.ToList());
     }
 
     [HttpGet("withroles")]
-    [Authorize(Roles = "Admin")]
+    // [Authorize(Roles = "Admin")]
     public IActionResult GetWithRoles()
     {
         return Ok(_dbContext.UserProfiles
@@ -44,7 +44,17 @@ public class UserProfileController : ControllerBase
             Roles = _dbContext.UserRoles
             .Where(ur => ur.UserId == up.IdentityUserId)
             .Select(ur => _dbContext.Roles.SingleOrDefault(r => r.Id == ur.RoleId).Name)
-            .ToList()
+            .ToList(),
+            Subscribers = up.Subscribers.Select(s => new Subscription
+            {
+                CreatorId = s.CreatorId,
+                FollowerId = s.FollowerId
+            }).ToList(),
+            Subscriptions = up.Subscriptions.Select(s => new Subscription
+            {
+                CreatorId = s.CreatorId,
+                FollowerId = s.FollowerId
+            }).ToList()
         }));
     }
 
