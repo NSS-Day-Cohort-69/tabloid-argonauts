@@ -41,6 +41,8 @@ public class UserProfileController : ControllerBase
             UserName = up.IdentityUser.UserName,
             IdentityUserId = up.IdentityUserId,
             IsActive = up.IsActive,
+            ApprovalNeeded = up.ApprovalNeeded,
+            IdOfAdminApproved = up.IdOfAdminApproved,
             Roles = _dbContext.UserRoles
             .Where(ur => ur.UserId == up.IdentityUserId)
             .Select(ur => _dbContext.Roles.SingleOrDefault(r => r.Id == ur.RoleId).Name)
@@ -49,10 +51,15 @@ public class UserProfileController : ControllerBase
     }
 
     [HttpPost("promote/{id}")]
-    // [Authorize(Roles = "Admin")]
-    public IActionResult Promote(string id)
+    [Authorize(Roles = "Admin")]
+    public IActionResult Promote(string id, int profileId)
     {
+
         IdentityRole role = _dbContext.Roles.SingleOrDefault(r => r.Name == "Admin");
+        UserProfile userProfile = _dbContext.UserProfiles.SingleOrDefault(up => up.Id == profileId);
+        userProfile.ApprovalNeeded = false;
+        userProfile.IdOfAdminApproved = 0;
+
         _dbContext.UserRoles.Add(new IdentityUserRole<string>
         {
             RoleId = role.Id,
@@ -62,23 +69,45 @@ public class UserProfileController : ControllerBase
         return NoContent();
     }
 
-    [HttpPost("demote/{id}")]
-    [Authorize(Roles = "Admin")]
-    public IActionResult Demote(string id)
+[HttpPost("demote/{id}")]
+[Authorize(Roles = "Admin")]
+public IActionResult Demote(string id, int adminId)
+{
+    // Fetch the role with the name "Admin"
+    IdentityRole role = _dbContext.Roles.SingleOrDefault(r => r.Name == "Admin");
+    if (role == null)
     {
-        IdentityRole role = _dbContext.Roles
-            .SingleOrDefault(r => r.Name == "Admin");
-
-        IdentityUserRole<string> userRole = _dbContext
-            .UserRoles
-            .SingleOrDefault(ur =>
-                ur.RoleId == role.Id &&
-                ur.UserId == id);
-
-        _dbContext.UserRoles.Remove(userRole);
-        _dbContext.SaveChanges();
-        return NoContent();
+        return NotFound("Admin role not found");
     }
+
+    // Fetch the user profile for the given adminId
+    UserProfile userProfile = _dbContext.UserProfiles.SingleOrDefault(up => up.Id == adminId);
+    if (userProfile == null)
+    {
+        return NotFound("User profile not found");
+    }
+
+    // Reset approval status
+    userProfile.ApprovalNeeded = false;
+    userProfile.IdOfAdminApproved = 0;
+
+    // Fetch the user role to be removed
+    IdentityUserRole<string> userRole = _dbContext
+        .UserRoles
+        .SingleOrDefault(ur =>
+            ur.RoleId == role.Id &&
+            ur.UserId == id);
+
+    if (userRole == null)
+    {
+        return NotFound("User role not found");
+    }
+
+    // Remove the user role
+    _dbContext.UserRoles.Remove(userRole);
+    _dbContext.SaveChanges();
+    return NoContent();
+}
 
     [Authorize]
     [HttpGet("{id}")]
@@ -116,6 +145,8 @@ public class UserProfileController : ControllerBase
                 up.FirstName,
                 up.LastName,
                 up.IsActive,
+                up.ApprovalNeeded,
+                up.IdOfAdminApproved,
                 Email = up.IdentityUser.Email,
                 UserName = up.IdentityUser.UserName,
                 up.IdentityUserId,
@@ -149,4 +180,46 @@ public class UserProfileController : ControllerBase
 
         return NoContent();
     }
+
+    [HttpPut("{id}/request")]
+    [Authorize(Roles = "Admin")]
+    public IActionResult Approve(int id, int adminId)
+    {
+        UserProfile user = _dbContext.UserProfiles.SingleOrDefault(up => up.Id == id);
+
+        if (user == null)
+        {
+            return NotFound("User not found");
+        }
+
+        if (!user.ApprovalNeeded)
+        {
+            user.ApprovalNeeded = true;
+            user.IdOfAdminApproved = adminId;
+            _dbContext.SaveChanges();
+        }
+
+        return NoContent();
+    }
+    [HttpPut("{id}/deny")]
+    [Authorize(Roles = "Admin")]
+    public IActionResult Deny(int id)
+    {
+        UserProfile user = _dbContext.UserProfiles.SingleOrDefault(up => up.Id == id);
+
+        if (user == null)
+        {
+            return NotFound("User not found");
+        }
+
+        if (user.ApprovalNeeded)
+        {
+            user.ApprovalNeeded = false;
+            user.IdOfAdminApproved = 0;
+            _dbContext.SaveChanges();
+        }
+
+        return NoContent();
+    }
 }
+

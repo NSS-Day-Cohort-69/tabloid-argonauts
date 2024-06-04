@@ -33,6 +33,10 @@ public class UserProfile
     public string IdentityUserId { get; set; }
     public bool IsActive { get; set; }
 
+    public bool ApprovalNeeded { get; set; }
+
+    public int IdOfAdminApproved { get; set; }
+
     public IdentityUser IdentityUser { get; set; }
 
     public string FullName

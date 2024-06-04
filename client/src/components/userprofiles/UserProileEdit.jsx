@@ -1,59 +1,44 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { demoteUser, getProfile, getProfiles, promoteUser } from "../../managers/userProfileManager";
-import { Button, Card, CardBody, CardTitle, FormGroup, Input, Label } from "reactstrap";
+import { getProfile, requestUser } from "../../managers/userProfileManager";
+import { Button, Card, CardBody, CardTitle, FormGroup } from "reactstrap";
 
-export default function UserProfileEdit() {
-  const [userProfile, setUserProfile] = useState();
-  const [pendingRoleChange, setPendingRoleChange] = useState(null);
-  const [isAdmin, setIsAdmin] = useState(false);
-
-  const navigate = useNavigate()
+export default function UserProfileEdit({ loggedInUser }) {
+  const [userProfile, setUserProfile] = useState(null);
+  const navigate = useNavigate();
   const { id } = useParams();
 
+  const getUserProfile = () => {
+    getProfile(id).then(setUserProfile);
+  };
+
   useEffect(() => {
-    getProfile(id).then(data => {
-      setUserProfile(data);
-      setIsAdmin(data.roles.includes("Admin"));
-    });
-  }, [id]);
+    getUserProfile(id);
+  }, [id]); // Added `id` as a dependency
 
-  const handleCheckboxChange = () => {
-    setIsAdmin(!isAdmin);
-    setPendingRoleChange(!isAdmin ? "promote" : "demote");
-  };
-
-  const saveChanges = async () => {
+  const handleUserRequest = async (userId, adminId) => {
     try {
-      if (pendingRoleChange === "promote") {
-        await promoteUser(userProfile.identityUserId);
-      } else if (pendingRoleChange === "demote") {
-        const allProfiles = await getProfiles();
-        const adminCount = allProfiles.filter(user => user.roles.includes("Admin")).length;
-        if (adminCount > 1) {
-        await demoteUser(userProfile.identityUserId);
+      if (userProfile.approvalNeeded) {
+        alert("Request Already Pending.");
       } else {
-        throw new Error("Cannot demote the only remaining admin")
+        await requestUser(userId, adminId);
+        alert("Request submitted successfully.");
+        navigate('/userprofiles');
       }
-    }
-      
-      const updatedProfile = await getProfile(id);
-      setUserProfile(updatedProfile);
-  
-      navigate('/userprofiles');
     } catch (error) {
-      console.error("Error saving changes:", error);
-      alert(error.message);
+      console.error("Error requesting user:", error);
+      alert("Failed to submit request. Please try again later.");
     }
   };
 
-  const cancelEdit = () => {
+  const backtopage = () => {
     navigate('/userprofiles');
   };
 
   if (!userProfile) {
     return null;
   }
+
   return (
     <>
       <Card
@@ -72,22 +57,25 @@ export default function UserProfileEdit() {
         <CardBody>
           <CardTitle tag="h5">Email: {userProfile.email}</CardTitle>
         </CardBody>
-        <FormGroup check>
-          <Label check>
-            <Input
-              type="checkbox"
-              checked={isAdmin}
-              onChange={handleCheckboxChange}
-            />{' '}
-            Admin
-          </Label>
-        </FormGroup>
+        <FormGroup check></FormGroup>
         <CardBody>
-          <Button color="primary" onClick={saveChanges} disabled={pendingRoleChange === null}>
-            Save
-          </Button>
-          <Button color="secondary" onClick={cancelEdit} style={{ marginLeft: '10px' }}>
-            Cancel
+          {userProfile.roles.includes("Admin") ? (
+            <Button
+              color="danger"
+              onClick={() => handleUserRequest(userProfile.id, loggedInUser.id)}
+            >
+              Request Demotion
+            </Button>
+          ) : (
+            <Button
+              color="success"
+              onClick={() => handleUserRequest(userProfile.id, loggedInUser.id)}
+            >
+              Request Promotion
+            </Button>
+          )}
+          <Button color="secondary" onClick={backtopage} style={{ marginLeft: '10px' }}>
+            Back
           </Button>
         </CardBody>
       </Card>

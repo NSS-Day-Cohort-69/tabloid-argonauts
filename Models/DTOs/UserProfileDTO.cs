@@ -12,4 +12,6 @@ namespace Tabloid.Models.DTOs;
         public bool IsActivated { get; set; }
         public virtual List<PostReactionDTO> PostReactions { get; set; }
         public bool IsActive { get; set; }
+        public bool ApprovalNeeded { get; set; }
+        public int IdOfAdminApproved { get; set; }
     }
