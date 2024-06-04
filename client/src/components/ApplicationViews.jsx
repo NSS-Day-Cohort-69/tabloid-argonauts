@@ -20,6 +20,7 @@ import { CreateReactionForm } from "./reactions/CreateReactionForm.jsx";
 import UserProfileEdit from "./userprofiles/UserProileEdit.jsx";
 import EditComment from "./comments/editCommentForm.jsx";
 import { UserPosts } from "./posts/UserPosts.jsx";
+import { SubscribedPosts } from "./posts/SubscribedPosts.jsx";
 
 export default function ApplicationViews({ loggedInUser, setLoggedInUser }) {
   return (
@@ -29,7 +30,7 @@ export default function ApplicationViews({ loggedInUser, setLoggedInUser }) {
           index
           element={
             <AuthorizedRoute loggedInUser={loggedInUser}>
-              <p>Welcome to Tabloid!</p>
+              <SubscribedPosts />
             </AuthorizedRoute>
           }
         />
@@ -100,7 +101,10 @@ export default function ApplicationViews({ loggedInUser, setLoggedInUser }) {
 
         <Route path="/posts">
           <Route index element={<PostsList loggedInUser={loggedInUser} />} />
-          <Route path="create" element={<CreatePost loggedInUser={loggedInUser}/>} />
+          <Route
+            path="create"
+            element={<CreatePost loggedInUser={loggedInUser} />}
+          />
           <Route path=":id">
             <Route
               index
@@ -113,8 +117,6 @@ export default function ApplicationViews({ loggedInUser, setLoggedInUser }) {
               />
               <Route path="edit/:commentId" element={<EditComment />} />
             </Route>
-
-            
           </Route>
         </Route>
 

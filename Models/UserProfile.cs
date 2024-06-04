@@ -43,5 +43,7 @@ public class UserProfile
         }
     }
      public virtual List<PostReaction> PostReactions { get; set; }
+     public List<Subscription> Subscriptions { get; set; }
+     public List<Subscription> Subscribers { get; set; }
 
 }

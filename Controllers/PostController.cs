@@ -4,6 +4,7 @@ using Tabloid.Data;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
+using Tabloid.Models.DTOs;
 
 namespace Tabloid.Controllers;
 
@@ -53,6 +54,16 @@ public class PostController : ControllerBase
                 LastName = p.UserProfile.LastName,
                 CreateDateTime = p.UserProfile.CreateDateTime,
                 ImageLocation = p.UserProfile.ImageLocation,
+                Subscribers = p.UserProfile.Subscribers.Select(s => new Subscription
+                {
+                    CreatorId = s.CreatorId,
+                    FollowerId = s.FollowerId
+                }).ToList(),
+                Subscriptions = p.UserProfile.Subscriptions.Select(s => new Subscription
+                {
+                    CreatorId = s.CreatorId,
+                    FollowerId = s.FollowerId 
+                }).ToList()
             },
             IsApproved = p.IsApproved,
             PostTags = p.PostTags.Select(pt => new PostTag
@@ -97,6 +108,10 @@ public class PostController : ControllerBase
         Post post = _dbContext.Posts
         .Include(p => p.UserProfile)
         .ThenInclude(up => up.IdentityUser)
+        .Include(p => p.UserProfile)
+        .ThenInclude(s => s.Subscriptions)
+        .Include(up => up.UserProfile)
+        .ThenInclude(s => s.Subscribers)
         .Include(p => p.Tags)
         .Include(p => p.PostTags)
         .ThenInclude(pt => pt.Tag) 
@@ -279,7 +294,5 @@ public IActionResult RejectPost(int id)
 
     return Ok(post);
 }
-
-
 
 }
