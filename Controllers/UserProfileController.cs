@@ -119,7 +119,7 @@ public IActionResult Demote(string id, int adminId)
     return NoContent();
 }
 
-    [Authorize]
+    // [Authorize]
     [HttpGet("{id}")]
     public IActionResult GetById(int id)
     {
@@ -231,5 +231,42 @@ public IActionResult Demote(string id, int adminId)
 
         return NoContent();
     }
+
+     [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateProfile(int id, [FromForm] IFormFile image, [FromForm] string firstName, [FromForm] string lastName,  [FromForm]string userName,  [FromForm]string email)
+        {
+            var userProfile = await _dbContext.UserProfiles.FindAsync(id);
+            if (userProfile == null)
+            {
+                return NotFound();
+            }
+
+            userProfile.FirstName = firstName;
+            userProfile.LastName = lastName;
+            userProfile.UserName = userName;
+            userProfile.Email = email;
+
+            if (image != null && image.Length > 0)
+            {
+                var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
+                if (!Directory.Exists(uploadsFolder))
+                {
+                    Directory.CreateDirectory(uploadsFolder);
+                }
+
+                var filePath = Path.Combine(uploadsFolder, image.FileName);
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await image.CopyToAsync(stream);
+                }
+
+                userProfile.ImageLocation = $"/uploads/{image.FileName}";
+            }
+
+            _dbContext.Entry(userProfile).State = EntityState.Modified;
+            await _dbContext.SaveChangesAsync();
+
+            return Ok(userProfile);
+        }
 }
 
