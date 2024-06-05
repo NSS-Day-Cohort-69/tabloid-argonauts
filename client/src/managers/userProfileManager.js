@@ -12,20 +12,32 @@ export const getProfileWithRoles = (id) => {
   return fetch(_apiUrl + `/${id}/withroles`).then((res) => res.json());
 };
 
-export const promoteUser = (userId) => {
-  return fetch(`${_apiUrl}/promote/${userId}`, {
+export const promoteUser = (userId, id) => {
+  return fetch(`${_apiUrl}/promote/${userId}?profileId=${id}`, {
     method: "POST",
   });
 };
 
-export const demoteUser = (userId) => {
-  return fetch(`${_apiUrl}/demote/${userId}`, {
+export const demoteUser = (userId, id) => {
+  return fetch(`${_apiUrl}/demote/${userId}?adminId=${id}`, {
     method: "POST",
   });
 };
 
 export const toggleUserActiveStatus = (userId) => {
   return fetch(`${_apiUrl}/${userId}/toggle`, {
+    method: "PUT",
+  });
+};
+
+export const requestUser = (userId, adminId) => {
+  return fetch(`${_apiUrl}/${userId}/request?adminId=${adminId}`, {
+    method: "PUT",
+  });
+};
+
+export const denyUser = (userId) => {
+  return fetch(`${_apiUrl}/${userId}/deny`, {
     method: "PUT",
   });
 };

@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
 import { getProfiles, toggleUserActiveStatus, } from "../../managers/userProfileManager";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Button, Table } from "reactstrap";
 
 export default function UserProfileList() {
   const [userprofiles, setUserProfiles] = useState([]);
   const [viewDeactivated, setViewDeactivated] = useState(false);
+  const navigate = useNavigate()
 
   const getUserProfiles = () => {
     getProfiles().then(setUserProfiles);
@@ -26,11 +27,19 @@ export default function UserProfileList() {
     setViewDeactivated(!viewDeactivated);
   };
 
+  const handleNavigation = () => {
+    navigate('/userprofiles/pending')
+  }
+
   return (
     <>
       <h2>User Profile List</h2>
       <Button onClick={toggleView}>
         {viewDeactivated ? "View Active" : "View Deactivated"}
+      </Button>
+      <span>  </span>
+      <Button onClick={handleNavigation}>
+        Pending Requests
       </Button>
       <Table>
         <thead><tr>

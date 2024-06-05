@@ -20,6 +20,7 @@ import { CreateReactionForm } from "./reactions/CreateReactionForm.jsx";
 import UserProfileEdit from "./userprofiles/UserProileEdit.jsx";
 import EditComment from "./comments/editCommentForm.jsx";
 import { UserPosts } from "./posts/UserPosts.jsx";
+import AdminApproval from "./userprofiles/AdminApproval.jsx";
 import { SubscribedPosts } from "./posts/SubscribedPosts.jsx";
 import EditPost from "./posts/EditPost.jsx";
 
@@ -56,7 +57,15 @@ export default function ApplicationViews({ loggedInUser, setLoggedInUser }) {
             path=":id/edit"
             element={
               <AuthorizedRoute loggedInUser={loggedInUser} roles={["Admin"]}>
-                <UserProfileEdit />
+                <UserProfileEdit loggedInUser={loggedInUser} />
+              </AuthorizedRoute>
+            }
+          />
+          <Route
+            path="pending"
+            element={
+              <AuthorizedRoute loggedInUser={loggedInUser} roles={["Admin"]}>
+                <AdminApproval loggedInUser={loggedInUser} />
               </AuthorizedRoute>
             }
           />

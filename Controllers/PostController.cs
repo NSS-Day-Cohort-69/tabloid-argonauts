@@ -62,7 +62,7 @@ public class PostController : ControllerBase
                 Subscriptions = p.UserProfile.Subscriptions.Select(s => new Subscription
                 {
                     CreatorId = s.CreatorId,
-                    FollowerId = s.FollowerId 
+                    FollowerId = s.FollowerId
                 }).ToList()
             },
             IsApproved = p.IsApproved,
@@ -133,7 +133,7 @@ public class PostController : ControllerBase
 
 
     [HttpPost]
-   
+
     public IActionResult CreatePost([FromBody] Post post)
     {
         if (!ModelState.IsValid)
@@ -247,80 +247,52 @@ public class PostController : ControllerBase
 
 
     [HttpGet("pending")]
-// [Authorize(Roles = "Admin")]
-public IActionResult GetPendingPosts()
-{
-    var pendingPosts = _dbContext.Posts
-        .Include(p => p.UserProfile)
-        .Include(p => p.Category)
-        .Include(p => p.PostTags)
-        .ThenInclude(pt => pt.Tag)
-        .Include(p => p.PostReactions)
-        .Where(p => !p.IsApproved)
-        .OrderByDescending(p => p.PublicationDate)
-        .ToList();
-
-    return Ok(pendingPosts);
-}
-
-[HttpPut("{id}/approve")]
-// [Authorize(Roles = "Admin")]
-public IActionResult ApprovePost(int id)
-{
-    var post = _dbContext.Posts.Find(id);
-    if (post == null)
+    // [Authorize(Roles = "Admin")]
+    public IActionResult GetPendingPosts()
     {
-        return NotFound();
+        var pendingPosts = _dbContext.Posts
+            .Include(p => p.UserProfile)
+            .Include(p => p.Category)
+            .Include(p => p.PostTags)
+            .ThenInclude(pt => pt.Tag)
+            .Include(p => p.PostReactions)
+            .Where(p => !p.IsApproved)
+            .OrderByDescending(p => p.PublicationDate)
+            .ToList();
+
+        return Ok(pendingPosts);
     }
 
-    post.IsApproved = true;
-    _dbContext.SaveChanges();
-
-    return Ok(post);
-}
-
-[HttpPut("{id}/reject")]
-// [Authorize(Roles = "Admin")]
-public IActionResult RejectPost(int id)
-{
-    var post = _dbContext.Posts.Find(id);
-    if (post == null)
+    [HttpPut("{id}/approve")]
+    // [Authorize(Roles = "Admin")]
+    public IActionResult ApprovePost(int id)
     {
-        return NotFound();
+        var post = _dbContext.Posts.Find(id);
+        if (post == null)
+        {
+            return NotFound();
+        }
+
+        post.IsApproved = true;
+        _dbContext.SaveChanges();
+
+        return Ok(post);
     }
 
-    post.IsApproved = false;
-    _dbContext.SaveChanges();
-
-    return Ok(post);
-}
-
-    [HttpPut("{postId}/edit")]
-    // [Authorize]
-    public IActionResult UpdatePost(int postId, [FromBody] Post updatedPost)
+    [HttpPut("{id}/reject")]
+    // [Authorize(Roles = "Admin")]
+    public IActionResult RejectPost(int id)
     {
-        try
+        var post = _dbContext.Posts.Find(id);
+        if (post == null)
         {
-            var postToUpdate = _dbContext.Posts.Find(postId);
-
-            if (postToUpdate == null)
-            {
-                return NotFound();
-            }
-
-            postToUpdate.Title = updatedPost.Title;
-            postToUpdate.Content = updatedPost.Content;
-            postToUpdate.HeaderImage = updatedPost.HeaderImage;
-            postToUpdate.CategoryId = updatedPost.CategoryId;
-
-            _dbContext.SaveChanges();
-
-            return CreatedAtAction(nameof(GetPostById), new { id = postToUpdate.Id }, postToUpdate);
+            return NotFound();
         }
-        catch (Exception ex)
-        {
-            return StatusCode(500, $"Internal server error: {ex.Message}");
-        }
+
+        post.IsApproved = false;
+        _dbContext.SaveChanges();
+
+        return Ok(post);
     }
 
 
