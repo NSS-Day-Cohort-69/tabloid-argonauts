@@ -150,7 +150,7 @@ export const PostsList = ({ loggedInUser }) => {
           <CardBody>
             <CardTitle tag="h5">{p.title}</CardTitle>
             <CardSubtitle className="mb-2 text-muted" tag="h6">
-              {p.userProfile?.fullName}
+              {p?.userProfile?.fullName}
             </CardSubtitle>
             <CardText>{p.category?.categoryName}</CardText>
             <CardText>

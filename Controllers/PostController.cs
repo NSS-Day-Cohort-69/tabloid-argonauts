@@ -295,33 +295,4 @@ public class PostController : ControllerBase
         return Ok(post);
     }
 
-
-    [HttpPut("{postId}/edit")]
-    // [Authorize]
-    public IActionResult UpdatePost(int postId, [FromBody] Post updatedPost)
-    {
-        try
-        {
-            var postToUpdate = _dbContext.Posts.Find(postId);
-
-            if (postToUpdate == null)
-            {
-                return NotFound();
-            }
-
-            postToUpdate.Title = updatedPost.Title;
-            postToUpdate.Content = updatedPost.Content;
-            postToUpdate.HeaderImage = updatedPost.HeaderImage;
-            postToUpdate.CategoryId = updatedPost.CategoryId;
-
-            _dbContext.SaveChanges();
-
-            return CreatedAtAction(nameof(GetPostById), new { id = postToUpdate.Id }, postToUpdate);
-        }
-        catch (Exception ex)
-        {
-            return StatusCode(500, $"Internal server error: {ex.Message}");
-        }
-    }
-
 }

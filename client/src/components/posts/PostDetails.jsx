@@ -30,6 +30,7 @@ import { GetReactions } from "../../managers/reactionManager";
 import "./posts.css";
 import {
   NewSubscription,
+  Unsubscribe,
   getSubscriptions,
 } from "../../managers/subscriptionManager";
 
@@ -60,8 +61,11 @@ export const PostDetails = ({ loggedInUser }) => {
 
   useEffect(() => {
     getPostById(id).then((obj) => setPost(obj));
-  }, [id]);
+  }, [id, post.subscribers, post.subscriptions]);
 
+  const refresh = () => {
+    getPostById(id).then((obj) => setPost(obj));
+  };
   useEffect(() => {
     GetAllTags().then((arr) => setTags(arr));
   }, []);
@@ -142,7 +146,6 @@ export const PostDetails = ({ loggedInUser }) => {
   }, [reactions, id]);
 
   const handleSubscribe = () => {
-    debugger;
     const subscription = {
       creatorId: post?.userProfile?.id,
       followerId: loggedInUser.id,
@@ -152,22 +155,31 @@ export const PostDetails = ({ loggedInUser }) => {
     });
   };
 
+  const handleUnsubscribe = () => {
+    const subscription = {
+      creatorId: post?.userProfile?.id,
+      followerId: loggedInUser.id,
+    };
+    Unsubscribe(subscription).then(() => {
+      console.log("sucess");
+    });
+  };
+
   useEffect(() => {
     getSubscriptions().then(setSubscriptions);
-  }, []);
+  }, [post]);
 
   useEffect(() => {
-    // debugger;
     const userSubscriptions = post.userProfile?.subscribers.filter(
-      (s) => s.followerId == loggedInUser.id
+      (s) => s.followerId == loggedInUser.id && s.endDate == null
     );
 
-    if (userSubscriptions == null) {
+    if (userSubscriptions?.length == 0) {
       setUserSubscriptions(false);
     } else {
       setUserSubscriptions(true);
     }
-  }, [post]);
+  }, [post, userSubscriptions, subscriptions]);
 
   return (
     <>
@@ -199,7 +211,9 @@ export const PostDetails = ({ loggedInUser }) => {
             <>
               <div className="post-btns">
                 <Button onClick={toggle}>Manage Tags</Button>
-                <Button onClick={() => navigate(`/myposts/edit/${post.id}`)}>Edit Post</Button>
+                <Button onClick={() => navigate(`/myposts/edit/${post.id}`)}>
+                  Edit Post
+                </Button>
                 <Button
                   onClick={() => {
                     setPostToDelete(post.id);
@@ -228,18 +242,33 @@ export const PostDetails = ({ loggedInUser }) => {
               )}
             </div>
           )}
-          {userSubscriptions == false ? (
-            <Button
-              className="post-btns"
-              onClick={() => {
-                handleSubscribe();
-              }}
-            >
-              Subscribe
-            </Button>
-          ) : (
-            <Button>Unscubscribe</Button>
-          )}
+          {post?.userProfileId != loggedInUser.id ? (
+            <div>
+              {userSubscriptions == false ? (
+                <Button
+                  className="post-btns"
+                  onClick={() => {
+                    handleSubscribe().then(() => {
+                      refresh();
+                    });
+                  }}
+                >
+                  Subscribe
+                </Button>
+              ) : (
+                <Button
+                  className="post-btns"
+                  onClick={() => {
+                    handleUnsubscribe().then(() => {
+                      refresh();
+                    });
+                  }}
+                >
+                  Unsubscribe
+                </Button>
+              )}
+            </div>
+          ) : null}
 
           {reactions.map((r) => (
             <div className="reaction-images" key={r.id}>
