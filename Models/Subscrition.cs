@@ -9,8 +9,8 @@ namespace Tabloid.Models;
        
         [Required]
         public int FollowerId { get; set; }
-        public DateTime StartDate { get; set; }
-        public DateTime EndDate { get; set; }
+        public DateTime? StartDate { get; set; }
+        public DateTime? EndDate { get; set; }
 
         public  UserProfile Creator { get; set; }
         public UserProfile Follower { get; set; }
