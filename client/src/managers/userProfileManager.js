@@ -4,8 +4,8 @@ export const getProfiles = () => {
   return fetch(_apiUrl + "/withroles").then((res) => res.json());
 };
 
-export const getProfile = (id) => {
-  return fetch(_apiUrl + `/${id}`).then((res) => res.json());
+export const getProfile = async (id) => {
+  return await fetch(_apiUrl + `/${id}`).then((res) => res.json());
 };
 
 export const getProfileWithRoles = (id) => {
@@ -40,4 +40,14 @@ export const denyUser = (userId) => {
   return fetch(`${_apiUrl}/${userId}/deny`, {
     method: "PUT",
   });
+};
+
+export const editProfile = (formData, id) => {
+  return fetch(`${_apiUrl}/${id}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(formData),
+  }).then((res) => res.json());
 };
