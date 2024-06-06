@@ -156,7 +156,7 @@ export default function ApplicationViews({ loggedInUser, setLoggedInUser }) {
         <Route
           path="edit/:postId"
           element={
-            <AuthorizedRoute loggedInUser={loggedInUser} roles={["Admin"]}>
+            <AuthorizedRoute loggedInUser={loggedInUser}>
               <EditPost />
             </AuthorizedRoute>
           }
