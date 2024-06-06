@@ -10,6 +10,7 @@ public class Post
         public string HeaderImage { get; set; }
         [Required]
         public string Content { get; set; }
+
         public DateTime CreationDate { get; set; }
         public DateTime PublicationDate { get; set; }
         public int CategoryId { get; set; }
