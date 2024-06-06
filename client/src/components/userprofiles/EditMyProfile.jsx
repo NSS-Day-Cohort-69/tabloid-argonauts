@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { editProfile, getProfile } from "../../managers/userProfileManager";
 
 export const EditMyProfile = () => {
@@ -11,6 +11,8 @@ export const EditMyProfile = () => {
   const [email, setEmail] = useState("");
   const [userName, setUsername] = useState("");
   const [profile, setProfile] = useState({});
+
+  const navigate = useNavigate();
 
   const fileSelectedHandler = (event) => {
     setSelectedFile(event.target.files[0]);
@@ -38,6 +40,8 @@ export const EditMyProfile = () => {
     try {
       const response = await editProfile(formData, parseInt(userId));
       console.log('Response:', response);  // Debug logging
+      navigate('/profile')
+
     } catch (error) {
       console.error("There was an error uploading the file!", error);
     }

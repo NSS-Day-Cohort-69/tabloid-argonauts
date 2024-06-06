@@ -295,4 +295,40 @@ public class PostController : ControllerBase
         return Ok(post);
     }
 
+    [HttpPut("{id}")]
+
+    public async Task<IActionResult> UpdatePost(int id, [FromForm] string title, [FromForm] string content, [FromForm] int categoryId, [FromForm] IFormFile image )
+    {
+        Post post = _dbContext.Posts
+        .SingleOrDefault(p => p.Id == id);
+        if (post == null)
+        {
+            return NotFound();
+        }
+        post.Title = title;
+        post.Content = content;
+        post.CategoryId = categoryId;
+
+        if (image != null && image.Length > 0)
+            {
+                var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "client", "public", "uploads");
+                if (!Directory.Exists(uploadsFolder))
+                {
+                    Directory.CreateDirectory(uploadsFolder);
+                }
+                var filePath = Path.Combine(uploadsFolder, image.FileName);
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await image.CopyToAsync(stream);
+                }
+
+                post.HeaderImage = $"/uploads/{image.FileName}";
+            }
+
+            _dbContext.Entry(post).State = EntityState.Modified;
+            await _dbContext.SaveChangesAsync();
+
+            return Ok(post);
+    }
+
 }

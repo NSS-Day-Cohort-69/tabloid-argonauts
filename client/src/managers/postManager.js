@@ -115,14 +115,21 @@ export const rejectPost = async (postId) => {
   }).then((res) => res.json());
 };
 
-export const editPost = (postId, object) => {
-  return fetch(`${_apiUrl}/${postId}/edit`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json"},
-      body: JSON.stringify(object)
-  }).then((response) => {
-    if (!response.ok) {
-      throw new Error("Failed to edit post");
-    }
-  });
-}
+// export const editPost = (postId, object) => {
+//   return fetch(`${_apiUrl}/${postId}/edit`, {
+//       method: "PUT",
+//       headers: { "Content-Type": "application/json"},
+//       body: JSON.stringify(object)
+//   }).then((response) => {
+//     if (!response.ok) {
+//       throw new Error("Failed to edit post");
+//     }
+//   });
+// }
+
+export const editPost = (formData, id) => {
+  return fetch(`${_apiUrl}/${id}`, {
+    method: "PUT",
+    body: formData,
+  }).then((res) => res.json());
+};

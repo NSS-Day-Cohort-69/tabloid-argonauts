@@ -5,21 +5,28 @@ import { editPost, getPostById } from "../../managers/postManager.js";
 import { getAllCategories } from "../../managers/categoryManager.js";
 
 const EditPost = () => {
+  
   const { postId } = useParams();
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [headerImage, setHeaderImage] = useState("");
   const [category, setCategory] = useState(0);
   const [categories, setCategories] = useState([]);
+  const [post, setPost] = useState({});
+  const [selectedFile, setSelectedFile] = useState(null);
 
   const navigate = useNavigate();
+
+  const fileSelectedHandler = (event) => {
+    setSelectedFile(event.target.files[0]);
+  };
 
   useEffect(() => {
     if (postId) {
         const fetchPost = async () => {
             try {
               const postData = await getPostById(postId);
-      
+              setPost(postData)
               setTitle(postData.title);
               setContent(postData.content);
               setHeaderImage(postData.headerImage);
@@ -39,12 +46,26 @@ useEffect(() => {
 
   const handleSave = async (e) => {
     e.preventDefault();
+    const formData = new FormData();
+    formData.append("image", selectedFile);
+    formData.append("title", title);
+    formData.append("content", content);
+    formData.append("categoryId", category);
+    
     try {
-      await editPost(postId, {title, content, headerImage, categoryId: category})
-      navigate(`/posts/${postId}`);
+      const response = await editPost(formData, parseInt(postId));
+      console.log('Response:', response);  // Debug logging
+      navigate(`/posts/${postId}`)
     } catch (error) {
-      console.error("Error updating this post:", error);
+      console.error("There was an error uploading the file!", error);
     }
+    
+    // try {
+    //   await editPost(postId, {title, content, headerImage, categoryId: category})
+    //   navigate(`/posts/${postId}`);
+    // } catch (error) {
+    //   console.error("Error updating this post:", error);
+    // }
   };
 
   const handleCancel = () => {
@@ -76,15 +97,10 @@ useEffect(() => {
           />
         </FormGroup>
         <FormGroup>
-          <Label>Header Image URL</Label>
+          <Label>Header Image</Label>
           <Input
-            type="text"
-            name="headerImage"
-            id="headerImage"
-            value={headerImage}
-            onChange={(e) => {
-              setHeaderImage(e.target.value);
-            }}
+            type="file"
+            onChange={fileSelectedHandler}
           />
         </FormGroup>
           <FormGroup>
