@@ -45,9 +45,6 @@ export const denyUser = (userId) => {
 export const editProfile = (formData, id) => {
   return fetch(`${_apiUrl}/${id}`, {
     method: "PUT",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(formData),
+    body: formData,
   }).then((res) => res.json());
 };

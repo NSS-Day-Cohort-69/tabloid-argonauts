@@ -9,7 +9,7 @@ export const EditMyProfile = () => {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
-  const [username, setUsername] = useState("");
+  const [userName, setUsername] = useState("");
   const [profile, setProfile] = useState({});
 
   const fileSelectedHandler = (event) => {
@@ -27,17 +27,17 @@ export const EditMyProfile = () => {
   }, [userId]);
 
   const handleSubmit = async (event) => {
-    debugger;
     event.preventDefault();
     const formData = new FormData();
     formData.append("image", selectedFile);
     formData.append("firstName", firstName);
     formData.append("lastName", lastName);
-    formData.append("username", username);
+    formData.append("username", userName);
     formData.append("email", email);
 
     try {
-      editProfile(formData, parseInt(userId));
+      const response = await editProfile(formData, parseInt(userId));
+      console.log('Response:', response);  // Debug logging
     } catch (error) {
       console.error("There was an error uploading the file!", error);
     }
@@ -65,7 +65,7 @@ export const EditMyProfile = () => {
         <label>Username:</label>
         <input
           type="text"
-          value={lastName}
+          value={userName}
           onChange={(e) => setUsername(e.target.value)}
         />
       </div>
@@ -73,7 +73,7 @@ export const EditMyProfile = () => {
         <label>Email Address:</label>
         <input
           type="text"
-          value={lastName}
+          value={email}
           onChange={(e) => setEmail(e.target.value)}
         />
       </div>
