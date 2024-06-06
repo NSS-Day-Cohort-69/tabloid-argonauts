@@ -235,7 +235,10 @@ public IActionResult Demote(string id, int adminId)
      [HttpPut("{id}")]
         public async Task<IActionResult> UpdateProfile(int id, [FromForm] IFormFile image, [FromForm] string firstName, [FromForm] string lastName,  [FromForm]string userName,  [FromForm]string email)
         {
-            var userProfile = await _dbContext.UserProfiles.FindAsync(id);
+            
+             UserProfile userProfile = _dbContext.UserProfiles
+            .Include(up => up.IdentityUser)
+            .SingleOrDefault(up => up.Id == id);
             if (userProfile == null)
             {
                 return NotFound();
@@ -243,12 +246,12 @@ public IActionResult Demote(string id, int adminId)
 
             userProfile.FirstName = firstName;
             userProfile.LastName = lastName;
-            userProfile.UserName = userName;
-            userProfile.Email = email;
+            userProfile.IdentityUser.UserName = userName;
+            userProfile.IdentityUser.Email = email;
 
             if (image != null && image.Length > 0)
             {
-                var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
+                var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "client", "public", "uploads");
                 if (!Directory.Exists(uploadsFolder))
                 {
                     Directory.CreateDirectory(uploadsFolder);
