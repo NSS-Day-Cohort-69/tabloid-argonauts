@@ -72,10 +72,12 @@ const ViewComments = ({loggedInUser}) => {
                                 {comment.userProfile.id === loggedInUser.id && (
                                     <>
                                         <Button color="info" onClick={() => handleEdit(comment.id)}>Edit</Button>{' '}
-                                        <Button color="danger" onClick={() => handleDelete(comment.id)}>Delete</Button>
                                     </>
                                     )}
-                                   
+                                      {comment.userProfile.id === loggedInUser.id || loggedInUser.roles == 'Admin' && (
+                                     <Button color="danger" onClick={() => handleDelete(comment.id)}>Delete</Button>
+                                     )}  
+                                    
                             </CardBody>
                         </Card>
                     ))}
