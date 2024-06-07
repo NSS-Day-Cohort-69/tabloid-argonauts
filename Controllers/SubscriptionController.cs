@@ -68,7 +68,7 @@ public class SubscriptionController : ControllerBase
     }
 
     [HttpPut]
-    // [Authorize]
+    [Authorize]
     
     public IActionResult Unsubscribe(Subscription subscription)
     {

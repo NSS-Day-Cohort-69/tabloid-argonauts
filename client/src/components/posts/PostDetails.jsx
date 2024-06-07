@@ -55,6 +55,8 @@ export const PostDetails = ({ loggedInUser }) => {
     s;
   };
 
+  
+
   useEffect(() => {
     GetReactions().then(setReactions);
   }, []);
@@ -145,24 +147,22 @@ export const PostDetails = ({ loggedInUser }) => {
     }
   }, [reactions, id]);
 
-  const handleSubscribe = () => {
+  const handleSubscribe = async () => {
     const subscription = {
       creatorId: post?.userProfile?.id,
       followerId: loggedInUser.id,
     };
-    NewSubscription(subscription).then(() => {
-      console.log("subscription success");
-    });
+    await NewSubscription(subscription);
+    refresh();
   };
 
-  const handleUnsubscribe = () => {
+  const handleUnsubscribe = async () => {
     const subscription = {
       creatorId: post?.userProfile?.id,
       followerId: loggedInUser.id,
     };
-    Unsubscribe(subscription).then(() => {
-      console.log("sucess");
-    });
+    await Unsubscribe(subscription);
+    refresh();
   };
 
   useEffect(() => {
