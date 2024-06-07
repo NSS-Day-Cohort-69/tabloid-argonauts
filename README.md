@@ -66,12 +66,8 @@ As an Admin you can do all this plus...
 To install follow the steps below
 1. To pull this on your machine, open your terminal, and use the command "git clone git@github.com:NSS-Day-Cohort-69/tabloid-argonauts.git".
 1. Run "cd tabloid-argonauts" in the terminal.
-1. Run    ``` bash
-    dotnet ef migrations add InitialCreate
-    ``` in your terminal.
-1. Run  ``` bash
-    dotnet ef database update
-    ```
+1. Run "dotnet ef migrations add InitialCreate" in your terminal.
+1. Run  "dotnet ef database update" in your terminal.
 1. Run "code ." inside the tabloid-argonaunts directory
 1. navgiate to the run and debug menu in vscode and make sure .NET Core is selected as your debugger.
 1. Run the debugger.
