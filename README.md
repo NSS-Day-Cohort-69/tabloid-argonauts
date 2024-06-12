@@ -76,6 +76,3 @@ To install follow the steps below
 1. Once in, follow the prompts, register, and enjoy the site.
 1. To login as an Admin use the log in "admina@strator.comx" as the email, and "password" as the password.
 
-## Known Issues(Ongoing)
-
-The Unsubscribe button will not refresh upon clicking it in the post details. Solution on this is ongoing

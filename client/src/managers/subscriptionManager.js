@@ -25,5 +25,5 @@ export const Unsubscribe = (subscription) => {
       "Content-Type": "application/json",
     },
     body: JSON.stringify(subscription),
-  }).then((res) => res.json());
+  });
 };
